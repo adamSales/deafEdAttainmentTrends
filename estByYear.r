@@ -30,14 +30,14 @@ yearInfo <- function(year){
 
     out <- list()
     out$bachByAge <- svyby2(~bach,~AGEP+DEAR,des,svymean,na.rm=TRUE)
-    out$bach25.29 <- svyby2(~bach,~DEAR+I(AGEP<30),des,svymean,na.rm=TRUE)
+    if(!ya) out$bach25.29 <- svyby2(~bach,~DEAR+I(AGEP<30),des,svymean,na.rm=TRUE)
     out$bachTot <- svyby2(~bach,~DEAR,des,svymean,na.rm=TRUE)
-    out$bachByAgeCat <- svyby2(~bach, ~ageRange+DEAR,des,svymean,na.rm=TRUE)
+    if(!ya) out$bachByAgeCat <- svyby2(~bach, ~ageRange+DEAR,des,svymean,na.rm=TRUE)
 
     out$hsByAge <- svyby2(~hs,~AGEP+DEAR,des,svymean,na.rm=TRUE)
-    out$hs25.29 <- svyby2(~hs,~DEAR+I(AGEP<30),des,svymean,na.rm=TRUE)
+    if(!ya) out$hs25.29 <- svyby2(~hs,~DEAR+I(AGEP<30),des,svymean,na.rm=TRUE)
     out$hsTot <- svyby2(~hs,~DEAR,des,svymean,na.rm=TRUE)
-    out$hsByAgeCat <- svyby2(~hs, ~ageRange+DEAR,des,svymean,na.rm=TRUE)
+    if(!ya) out$hsByAgeCat <- svyby2(~hs, ~ageRange+DEAR,des,svymean,na.rm=TRUE)
 
 
     out$bachRace <- svyby2(~bach,~raceEth+DEAR,des,svymean,na.rm=TRUE)
@@ -51,12 +51,12 @@ yearInfo <- function(year){
 
     outAge <- list()
     outAge$bachTot <- svyby2(~bach,~DEAR+AGEP,des,svymean,na.rm=TRUE)
-    outAge$bach25.29 <- svyby2(~bach,~DEAR+AGEP,subset(des,AGEP<30),svymean,na.rm=TRUE)
-    outAge$bachByAgeCat <- svyby2(~bach, ~ageRange+DEAR+AGEP,des,svymean,na.rm=TRUE)
+    if(!ya) outAge$bach25.29 <- svyby2(~bach,~DEAR+AGEP,subset(des,AGEP<30),svymean,na.rm=TRUE)
+    if(!ya) outAge$bachByAgeCat <- svyby2(~bach, ~ageRange+DEAR+AGEP,des,svymean,na.rm=TRUE)
 
     outAge$hsTot <- svyby2(~hs,~AGEP+DEAR,des,svymean,na.rm=TRUE)
-    outAge$hs25.29 <- svyby2(~hs,~DEAR+AGEP,subset(des,AGEP<30),svymean,na.rm=TRUE)
-    outAge$hsByAgeCat <- svyby2(~hs, ~ageRange+DEAR+AGEP,des,svymean,na.rm=TRUE)
+    if(!ya) outAge$hs25.29 <- svyby2(~hs,~DEAR+AGEP,subset(des,AGEP<30),svymean,na.rm=TRUE)
+    if(!ya) outAge$hsByAgeCat <- svyby2(~hs, ~ageRange+DEAR+AGEP,des,svymean,na.rm=TRUE)
 
     outAge$bachRace <- svyby2(~bach,~raceEth+DEAR+AGEP,des,svymean,na.rm=TRUE)
     outAge$hsRace <- svyby2(~hs,~raceEth+DEAR+AGEP,des,svymean,na.rm=TRUE)
@@ -68,10 +68,6 @@ yearInfo <- function(year){
     outAge$hsRaceSex <- svyby2(~hs,~SEX+raceEth+DEAR+AGEP,des,svymean,na.rm=TRUE)
 
     rm(des);gc()
-
-
-    outAge <- lapply(outAge,function(x) x[,-c(grep('FALSE',colnames(x)),which(colnames(x)=='se1'))])
-    out <- lapply(out,function(x) x[,-c(grep('FALSE',colnames(x)),which(colnames(x)=='se1'))])
 
     list(pooled=out,age=outAge)
 }
