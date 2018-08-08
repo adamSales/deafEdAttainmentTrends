@@ -29,7 +29,7 @@ for(i in 1:length(overTime)){
 
 combineDat <- function(nnn,ot,deaf=NULL){
     tdat <- do.call('rbind', lapply(ot, function(x) x[[nnn]]))
-    names(tdat)[grep('I\\(attain|xx',names(tdat))] <- 'y'
+    names(tdat) <- gsub('bach|hs','y',names(tdat))
 
     for(i in 1:ncol(tdat)) if(is.factor(tdat[,i])) tdat[,i] <- as.character(tdat[,i])
 
@@ -40,9 +40,9 @@ combineDat <- function(nnn,ot,deaf=NULL){
         tdat$DEAR <- NULL
     }
 
-    tdat <- tdat[tdat$se2>0,]
+    tdat$se[tdat$se==0] <- NA
 
-    subCols <- setdiff(names(tdat),c('y','AGEP','se1','se2','year'))
+    subCols <- setdiff(names(tdat),c('y','AGEP','se','Freq','se1','se2','year'))
     subsets <- if(length(subCols)>1) do.call(expand.grid,lapply(tdat[,subCols],unique))
                else cbind(unique(tdat[,subCols]))
     list(tdat=tdat,subCols=subCols,subsets=subsets)
