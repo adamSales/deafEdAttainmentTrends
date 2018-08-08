@@ -1,0 +1,868 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{makecell}
+\usepackage{hyperref}
+\usepackage[authoryear]{natbib}
+\usepackage{fullpage}
+\usepackage{capt-of}
+\usepackage{placeins}
+
+%\def\arraystretch{2}\tabcolsep=10pt
+
+
+\title{DHH Educational Attainment in the ACS}
+\author{Adam Sales}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+\maketitle
+
+
+\DeclareGraphicsExtensions{.pdf}
+
+\section{Educational Attainment in 2015}
+%\subsection{Data}
+The data for this section are from the 2015 ACS.
+We discarded respondents below the age of 25, who were likely to be
+students.
+We also discarded respondents above the age of 64, many of whom likely
+suffer from age-onset hearing loss, and thus complicate the
+interpretation of the study.
+Finally, we discarded %respondents who are currently in school (though a
+%future section will analyze these) and
+respondants with missing
+deafness information (i.e. an NA for the ``Hearing Difficulty''
+question).
+
+
+
+\clearpage
+\section{Changes Over Time}
+The ``hearing difficulty'' variable was introduced into the ACS in
+2008.
+Here we document changes in educational attainment for deaf and
+hearing Americans between the ages of 25 and 65 from 2008--2015.
+We focus on the proportions, over time, of people in each category under question
+who completed high school and who received bachelor degrees.
+
+In several of the analyses, we test for the presence of a trend over
+time among different groups.
+We also compare growth over these eight years among different groups.
+Growth, here, is simply the difference in attainment---proportion
+graduating high school or college---between 2008 and 2015.
+When there are only two categories to compare in a table the growth
+amounts are given individually and compared within the table.
+When there are several categories, a ``growth comparison table'' gives
+all of the pair-wise comparisons of growth between different groups in
+question, with standard errors and indicators of statistical
+significance.
+
+
+\clearpage
+%\subsection{High School and Bachelor Degrees Over Time}
+
+\begin{center}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/hsTot-1}
+
+\end{knitrout}
+\captionof{figure}{High school degree attainment over time from the ACS}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Deaf & Hearing \\
+  \hline
+2008 & 79.1 (0.4) & 86.5 (0.06) \\
+  2009 & 78.9 (0.5) & 86.7 (0.06) \\
+  2010 & 79.3 (0.4) & 86.7 (0.06) \\
+  2011 & 81.1 (0.4) & 87.2 (0.06) \\
+  2012 & 80.2 (0.4) & 87.5 (0.05) \\
+  2013 & 81.4 (0.4) & 87.6 (0.06) \\
+  2014 & 82 (0.3) & 87.8 (0.05) \\
+  2015 & 82 (0.4) & 87.9 (0.06) \\
+  2016 & 81.1 (0.4) & 88 (0.06) \\
+  trend & p$<$0.001 & p=0.02 \\
+  growth & 1.9 (0.6) & 1.5 (0.1) \\
+  growth diff. & 0.4 & (0.6) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf and hearing Americans over 25 who attained at least a high school diploma. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend}
+\end{table}
+
+
+
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bachTot-1}
+
+\end{knitrout}
+\captionof{figure}{Bachelor degree attainment over time from the ACS}
+
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Deaf & Hearing \\
+  \hline
+2008 & 16.7 (0.3) & 30.2 (0.07) \\
+  2009 & 15.9 (0.3) & 30.5 (0.08) \\
+  2010 & 16.2 (0.3) & 30.6 (0.08) \\
+  2011 & 16 (0.3) & 30.7 (0.09) \\
+  2012 & 16.3 (0.3) & 31.3 (0.08) \\
+  2013 & 17.9 (0.3) & 31.5 (0.09) \\
+  2014 & 18.1 (0.3) & 31.9 (0.08) \\
+  2015 & 17.8 (0.4) & 32.5 (0.08) \\
+  2016 & 18.5 (0.4) & 33 (0.09) \\
+  trend & p$<$0.001 & p=0.02 \\
+  growth & 1.8 (0.5) & 2.8 (0.1) \\
+  growth diff. & -1 & (0.5)* \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf and hearing Americans over 25 who attained at least a bachelors degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend}
+\end{table}
+
+
+\clearpage
+%\subsection{High School Degree Attainment for Ages 25--29}
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/hs2529-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Deaf & Hearing \\
+  \hline
+2008 & 79.9 (2) & 85.8 (0.15) \\
+  2009 & 81.3 (1.8) & 86.8 (0.15) \\
+  2010 & 81.6 (2.3) & 86.5 (0.17) \\
+  2011 & 81.9 (1.6) & 87.8 (0.16) \\
+  2012 & 81.7 (1.9) & 88.5 (0.13) \\
+  2013 & 79.4 (2.1) & 88.7 (0.13) \\
+  2014 & 80.6 (2) & 89.7 (0.13) \\
+  2015 & 86.1 (1.7) & 90.2 (0.14) \\
+  2016 & 85 (1.6) & 90.4 (0.13) \\
+  trend & p$<$0.001 & p=0.18 \\
+  growth & 5.2 (2.6) & 4.6 (0.2) \\
+  growth diff. & 0.6 & (2.6) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf and hearing Americans ages 25--29 who attained at least a high school degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend}
+\end{table}
+
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bach2529-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Deaf & Hearing \\
+  \hline
+2008 & 13.9 (1.7) & 27.8 (0.21) \\
+  2009 & 13.5 (1.6) & 30 (0.2) \\
+  2010 & 14.7 (1.5) & 30.2 (0.19) \\
+  2011 & 13.3 (1.6) & 30.6 (0.21) \\
+  2012 & 11.9 (1.7) & 31.4 (0.23) \\
+  2013 & 11 (1.2) & 31.7 (0.2) \\
+  2014 & 17.6 (1.7) & 32.1 (0.18) \\
+  2015 & 13.5 (1.6) & 33.1 (0.2) \\
+  2016 & 17.1 (1.8) & 33.3 (0.22) \\
+  trend & p=0.92 & p$<$0.001 \\
+  growth & 3.3 (2.4) & 5.5 (0.3) \\
+  growth diff. & -2.2 & (2.4) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf and hearing Americans ages 25--29 who attained at least a bachelors degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend}
+\end{table}
+
+
+\clearpage
+%\subsection{Educational Attainment by Age Over Time}
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/HSbyAge-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllll}
+  \hline
+ & 25-34 & 35-44 & 45-54 & 55-64 \\
+  \hline
+2008 & 78.7 (1.37) & 78.6 (1.02) & 78.7 (0.78) & 79.8 (0.54) \\
+  2009 & 80.5 (1.3) & 77 (1.26) & 77.9 (0.69) & 80 (0.53) \\
+  2010 & 79.2 (1.57) & 78.8 (1.16) & 78.2 (0.79) & 80.2 (0.52) \\
+  2011 & 81.2 (1.32) & 78.8 (1.18) & 80.1 (0.79) & 82.5 (0.56) \\
+  2012 & 79.9 (1.28) & 78.9 (1.24) & 78.3 (0.57) & 81.8 (0.56) \\
+  2013 & 79.9 (1.4) & 80.8 (1.02) & 80.2 (0.62) & 82.7 (0.57) \\
+  2014 & 80.9 (1.25) & 82.2 (1.12) & 80.4 (0.74) & 83.2 (0.51) \\
+  2015 & 84.4 (1.14) & 83.7 (0.91) & 80.9 (0.69) & 81.5 (0.59) \\
+  2016 & 83.4 (1.14) & 79.6 (1.25) & 80.1 (0.83) & 81.5 (0.56) \\
+  trend & p=0.04 & p=0.006 & p=0.02 & p=0.08 \\
+  growth & 4.7 (1.78) & 1.1 (1.61) & 1.4 (1.14) & 1.8 (0.78) \\
+   \hline
+\end{tabular}
+\caption{Percentage of deaf Americans in each age cateogory attained at least a high school diploma, from year 2008--2015. Standard errors are in parentheses}
+\label{tab:deafAgeTime}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllll}
+  \hline
+ & 25-34 & 35-44 & 45-54 & 55-64 \\
+  \hline
+2008 & 85.5 (0.11) & 86.3 (0.1) & 87.2 (0.1) & 87 (0.12) \\
+  2009 & 86.4 (0.12) & 86.1 (0.12) & 87.1 (0.09) & 87.2 (0.11) \\
+  2010 & 86.3 (0.13) & 86.3 (0.11) & 86.9 (0.09) & 87.5 (0.1) \\
+  2011 & 87.3 (0.12) & 86.7 (0.13) & 87.2 (0.1) & 87.7 (0.11) \\
+  2012 & 87.7 (0.11) & 87 (0.11) & 87.4 (0.08) & 87.9 (0.1) \\
+  2013 & 88.1 (0.11) & 86.8 (0.1) & 87.3 (0.1) & 88.1 (0.09) \\
+  2014 & 88.9 (0.09) & 87 (0.1) & 87.3 (0.09) & 87.9 (0.1) \\
+  2015 & 89.3 (0.1) & 87.1 (0.11) & 87.2 (0.1) & 87.9 (0.11) \\
+  2016 & 89.6 (0.11) & 87.3 (0.11) & 87.4 (0.08) & 87.7 (0.1) \\
+  trend & p$<$0.001 & p$<$0.001 & p=0.36 & p=0.08 \\
+  growth & 4.1 (0.16) & 1 (0.14) & 0.1 (0.13) & 0.7 (0.15) \\
+   \hline
+\end{tabular}
+\caption{Percentage of hearing Americans in each age cateogory attained at least a high school diploma, from year 2008--2015. Standard errors are in parentheses}
+\label{tab:hearAgeTime}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begingroup\small
+\begin{tabular}{rlllllll}
+  \hline
+ & \thead{35-44\\Deaf} & \thead{45-54\\Deaf} & \thead{55-64\\Deaf} & \thead{25-34\\Hearing} & \thead{35-44\\Hearing} & \thead{45-54\\Hearing} & \thead{55-64\\Hearing} \\
+  \hline
+25-34 Deaf & 3.6 (2.4) & 3.4 (2.11) & 3 (1.94) & 0.6 (1.78) & 3.8 (1.78)* & 4.6 (1.78)* & 4 (1.78)* \\
+  35-44 Deaf &  & -0.3 (1.97) & -0.7 (1.79) & -3 (1.62). & 0.1 (1.62) & 0.9 (1.62) & 0.4 (1.62) \\
+  45-54 Deaf &  &  & -0.4 (1.38) & -2.8 (1.15)* & 0.4 (1.15) & 1.2 (1.14) & 0.7 (1.15) \\
+  55-64 Deaf &  &  &  & -2.4 (0.79)** & 0.8 (0.79) & 1.6 (0.79)* & 1.1 (0.79) \\
+  25-34 Hearing &  &  &  &  & 3.2 (0.21)** & 4 (0.2)** & 3.5 (0.22)** \\
+  35-44 Hearing &  &  &  &  &  & 0.8 (0.19)** & 0.3 (0.21) \\
+  45-54 Hearing &  &  &  &  &  &  & -0.5 (0.2)** \\
+   \hline
+\end{tabular}
+\endgroup
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing age
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, 25-34 Deaf grew 3.6 percentage points more than 35-44 Deaf}
+\label{tab:hsAgeGrowth}
+\end{table}
+
+
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bachByAge-1}
+
+\end{knitrout}
+\end{center}
+
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllll}
+  \hline
+ & 25-34 & 35-44 & 45-54 & 55-64 \\
+  \hline
+2008 & 13 (1.13) & 14.8 (0.73) & 16.1 (0.57) & 18.9 (0.51) \\
+  2009 & 13.1 (1.1) & 13.9 (0.79) & 14.8 (0.54) & 18 (0.48) \\
+  2010 & 14.4 (1.05) & 14.3 (0.69) & 14.3 (0.57) & 18.5 (0.52) \\
+  2011 & 12.7 (0.99) & 17.3 (0.96) & 13.7 (0.73) & 17.9 (0.5) \\
+  2012 & 13.3 (1.05) & 17.6 (1.3) & 13.5 (0.65) & 18.3 (0.42) \\
+  2013 & 14.3 (1.07) & 17.7 (0.96) & 17.4 (0.61) & 19.2 (0.41) \\
+  2014 & 16.2 (1.15) & 21.1 (1.16) & 16.2 (0.65) & 18.7 (0.51) \\
+  2015 & 15.1 (1.12) & 20.2 (1.02) & 17.2 (0.69) & 18.1 (0.53) \\
+  2016 & 16.9 (1.12) & 20.8 (1.19) & 17.1 (0.66) & 18.8 (0.58) \\
+  trend & p=0.01 & p=0.002 & p=0.48 & p=0.76 \\
+  growth & 4 (1.59) & 6 (1.39) & 1 (0.87) & -0.1 (0.77) \\
+   \hline
+\end{tabular}
+\caption{Percentage of deaf Americans in each age cateogory attained at least a bachelor degree, from year 2008--2015. Standard errors are in parentheses}
+\label{tab:deafAgeTime}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllll}
+  \hline
+ & 25-34 & 35-44 & 45-54 & 55-64 \\
+  \hline
+2008 & 29.4 (0.15) & 31.2 (0.14) & 29.2 (0.11) & 31.3 (0.14) \\
+  2009 & 31 (0.16) & 31.2 (0.13) & 28.7 (0.12) & 31.2 (0.12) \\
+  2010 & 31.2 (0.15) & 31.7 (0.13) & 28.5 (0.12) & 31.1 (0.13) \\
+  2011 & 31.6 (0.17) & 32.4 (0.15) & 28.4 (0.13) & 30.6 (0.15) \\
+  2012 & 32.2 (0.16) & 33.1 (0.13) & 29.4 (0.14) & 30.5 (0.14) \\
+  2013 & 32.6 (0.17) & 33.1 (0.16) & 30 (0.13) & 30.2 (0.12) \\
+  2014 & 33.1 (0.15) & 33.8 (0.15) & 30.4 (0.14) & 30.1 (0.14) \\
+  2015 & 34.2 (0.16) & 34.5 (0.16) & 31.2 (0.13) & 29.8 (0.13) \\
+  2016 & 34.9 (0.15) & 35.2 (0.16) & 32 (0.15) & 29.9 (0.12) \\
+  trend & p$<$0.001 & p$<$0.001 & p=0.01 & p$<$0.001 \\
+  growth & 5.4 (0.21) & 3.9 (0.21) & 2.8 (0.19) & -1.5 (0.18) \\
+   \hline
+\end{tabular}
+\caption{Percentage of hearing Americans in each age cateogory attained at least a bachelor degree, from year 2008--2015. Standard errors are in parentheses}
+\label{tab:hearAgeTime}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:44 2017
+\begin{table}[ht]
+\centering
+\begingroup\small
+\begin{tabular}{rlllllll}
+  \hline
+ & \thead{35-44\\Deaf} & \thead{45-54\\Deaf} & \thead{55-64\\Deaf} & \thead{25-34\\Hearing} & \thead{35-44\\Hearing} & \thead{45-54\\Hearing} & \thead{55-64\\Hearing} \\
+  \hline
+25-34 Deaf & -2.1 (2.11) & 2.9 (1.81) & 4.1 (1.77)* & -1.4 (1.61) & 0 (1.61) & 1.1 (1.6) & 5.4 (1.6)** \\
+  35-44 Deaf &  & 5 (1.64)** & 6.1 (1.59)** & 0.6 (1.41) & 2.1 (1.41) & 3.2 (1.4)* & 7.5 (1.4)** \\
+  45-54 Deaf &  &  & 1.1 (1.16) & -4.4 (0.9)** & -2.9 (0.9)** & -1.8 (0.89)* & 2.5 (0.89)** \\
+  55-64 Deaf &  &  &  & -5.5 (0.8)** & -4 (0.8)** & -2.9 (0.79)** & 1.4 (0.79). \\
+  25-34 Hearing &  &  &  &  & 1.5 (0.3)** & 2.6 (0.28)** & 6.9 (0.28)** \\
+  35-44 Hearing &  &  &  &  &  & 1.1 (0.28)** & 5.4 (0.28)** \\
+  45-54 Hearing &  &  &  &  &  &  & 4.3 (0.26)** \\
+   \hline
+\end{tabular}
+\endgroup
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing age
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, 25-34 Deaf grew 2.1 percentage points less than 35-44 Deaf}
+\label{tab:bachAgeGrowth}
+\end{table}
+
+
+
+\clearpage
+%\subsection{Attainment over Time by Race/Ethnicity}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/hsRace-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllll}
+  \hline
+ & African American & American Indian & Asian/PacIsl & Hispanic & Other & White \\
+  \hline
+2008 & 71.6 (1.2) & 78.8 (2.7) & 75.5 (2.4) & 57.4 (1.4) & 81.7 (2.2) & 84 (0.5) \\
+  2009 & 69.2 (1.3) & 74.5 (3.6) & 73.6 (2.8) & 60.1 (1.7) & 78 (3.1) & 83.6 (0.5) \\
+  2010 & 71.8 (1.2) & 83.1 (2.8) & 72.9 (2.7) & 58.9 (1.5) & 83.8 (3.2) & 83.6 (0.5) \\
+  2011 & 74 (1.5) & 81.3 (3.5) & 75.7 (2.5) & 63.3 (1.4) & 79.8 (2.5) & 85.5 (0.4) \\
+  2012 & 73.1 (1.5) & 74.8 (3.7) & 74.5 (2.4) & 60.4 (1.4) & 81.3 (2.6) & 85.2 (0.4) \\
+  2013 & 77.3 (1.2) & 81 (2.6) & 76.8 (2.2) & 61.8 (1.5) & 86.2 (2.3) & 85.6 (0.4) \\
+  2014 & 75.9 (1.4) & 73.8 (3.6) & 79 (2.2) & 63.3 (1.2) & 83.2 (2.6) & 86.6 (0.4) \\
+  2015 & 77.1 (1.2) & 79.2 (3) & 77.5 (1.9) & 63 (1.3) & 84.4 (2) & 86.6 (0.4) \\
+  2016 & 75.9 (1.3) & 79.1 (3.5) & 76.1 (2.2) & 62.7 (1.2) & 85.5 (1.8) & 85.9 (0.4) \\
+  trend & p=0.01 & p=0.76 & p=0.08 & p=0.08 & p=0.08 & p=0.01 \\
+  growth & 4.4 (1.8) & 0.3 (4.4) & 0.6 (3.3) & 5.2 (1.9) & 3.8 (2.8) & 1.9 (0.6) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each racial/ethnic category attaining at least a high school degree, from 2008--2015. Also included is the p-value for Kendall's $	au$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllll}
+  \hline
+ & African American & American Indian & Asian/PacIsl & Hispanic & Other & White \\
+  \hline
+2008 & 85.2 (0.2) & 82.1 (0.9) & 89.1 (0.2) & 62.9 (0.2) & 89.4 (0.4) & 93 (0.1) \\
+  2009 & 85.7 (0.2) & 84.3 (0.7) & 89.4 (0.2) & 63.4 (0.2) & 90.8 (0.4) & 93.2 (0.1) \\
+  2010 & 85.7 (0.1) & 82.2 (0.6) & 89.6 (0.2) & 64.2 (0.2) & 90.4 (0.4) & 93.2 (0) \\
+  2011 & 86.2 (0.2) & 84.4 (0.6) & 89.2 (0.2) & 65.2 (0.2) & 91 (0.3) & 93.5 (0.1) \\
+  2012 & 87 (0.2) & 84.4 (0.7) & 89.8 (0.2) & 66.2 (0.2) & 91.2 (0.3) & 93.7 (0) \\
+  2013 & 87.1 (0.1) & 83.6 (0.6) & 90 (0.2) & 67 (0.2) & 92.3 (0.3) & 93.7 (0.1) \\
+  2014 & 87.3 (0.2) & 84.6 (0.7) & 90.3 (0.1) & 67.9 (0.2) & 91.9 (0.4) & 93.9 (0.1) \\
+  2015 & 87.5 (0.1) & 84.1 (0.8) & 90.5 (0.2) & 68.4 (0.2) & 93 (0.3) & 93.9 (0) \\
+  2016 & 87.8 (0.1) & 85.4 (0.6) & 90.6 (0.2) & 69.3 (0.2) & 92.2 (0.3) & 93.9 (0) \\
+  trend & p$<$0.001 & p=0.08 & p$<$0.001 & p$<$0.001 & p=0.002 & p$<$0.001 \\
+  growth & 2.5 (0.2) & 3.3 (1.1) & 1.5 (0.3) & 6.5 (0.3) & 2.9 (0.5) & 0.9 (0.1) \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each age, 25--64, attaining at least a high school degree, from 2008--2015. Also included is the p-value for Kendall's $	au$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015}
+\end{table}
+
+
+\begin{landscape}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begingroup\small
+\begin{tabular}{rlllllllllll}
+  \hline
+ & \thead{American Indian\\Deaf} & \thead{Asian/PacIsl\\Deaf} & \thead{Hispanic\\Deaf} & \thead{Other\\Deaf} & \thead{White\\Deaf} & \thead{Black\\Hearing} & \thead{American Indian\\Hearing} & \thead{Asian/PacIsl\\Hearing} & \thead{Hispanic\\Hearing} & \thead{Other\\Hearing} & \thead{White\\Hearing} \\
+  \hline
+Black Deaf & 4.1 (4.74) & 3.8 (3.75) & -0.9 (2.6) & 0.6 (3.36) & 2.5 (1.92) & 1.8 (1.83) & 1 (2.13) & 2.9 (1.84) & -2.1 (1.84) & 1.5 (1.88) & 3.5 (1.82). \\
+  American Indian Deaf &  & -0.3 (5.47) & -4.9 (4.76) & -3.5 (5.21) & -1.6 (4.42) & -2.2 (4.39) & -3 (4.52) & -1.2 (4.39) & -6.1 (4.39) & -2.5 (4.41) & -0.6 (4.38) \\
+  Asian/PacIsl Deaf &  &  & -4.6 (3.77) & -3.2 (4.33) & -1.3 (3.34) & -1.9 (3.29) & -2.8 (3.46) & -0.9 (3.29) & -5.9 (3.29). & -2.3 (3.31) & -0.3 (3.28) \\
+  Hispanic Deaf &  &  &  & 1.4 (3.38) & 3.3 (1.95). & 2.7 (1.87) & 1.9 (2.16) & 3.8 (1.88)* & -1.2 (1.88) & 2.4 (1.91) & 4.3 (1.86)* \\
+  Other Deaf &  &  &  &  & 1.9 (2.89) & 1.2 (2.83) & 0.4 (3.03) & 2.3 (2.83) & -2.7 (2.83) & 0.9 (2.86) & 2.9 (2.82) \\
+  White Deaf &  &  &  &  &  & -0.6 (0.65) & -1.4 (1.27) & 0.4 (0.67) & -4.6 (0.67)** & -1 (0.77) & 1 (0.62) \\
+  Black Hearing &  &  &  &  &  &  & -0.8 (1.13) & 1.1 (0.35)** & -3.9 (0.36)** & -0.3 (0.52) & 1.6 (0.23)** \\
+  American Indian Hearing &  &  &  &  &  &  &  & 1.9 (1.14) & -3.1 (1.14)** & 0.5 (1.21) & 2.4 (1.11)* \\
+  Asian/PacIsl Hearing &  &  &  &  &  &  &  &  & -5 (0.39)** & -1.4 (0.55)* & 0.6 (0.28)* \\
+  Hispanic Hearing &  &  &  &  &  &  &  &  &  & 3.6 (0.55)** & 5.6 (0.29)** \\
+  Other Hearing &  &  &  &  &  &  &  &  &  &  & 2 (0.48)** \\
+   \hline
+\end{tabular}
+\endgroup
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing racial/ethnic
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, Black Deaf grew 4.1 percentage points more than American Indian Deaf}
+\label{tab:hsRaceGrowth}
+\end{table}
+
+\end{landscape}
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bachRace-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllll}
+  \hline
+ & African American & American Indian & Asian/PacIsl & Hispanic & Other & White \\
+  \hline
+2008 & 9.5 (0.8) & 11 (2.5) & 29.4 (2.8) & 9.2 (0.9) & 18.2 (2.3) & 18.6 (0.4) \\
+  2009 & 9.3 (0.8) & 17.7 (2.5) & 26.7 (2) & 9.3 (0.8) & 14.9 (2.2) & 17.4 (0.4) \\
+  2010 & 9.3 (0.8) & 7.6 (1.7) & 24.1 (2.3) & 8.9 (0.8) & 17.5 (2.4) & 18.1 (0.4) \\
+  2011 & 9 (1) & 9.8 (2) & 31.1 (3) & 9 (0.8) & 14.4 (2.5) & 17.8 (0.4) \\
+  2012 & 10.1 (0.9) & 11.9 (4) & 29.8 (2.3) & 7.7 (0.9) & 17.5 (2) & 18.3 (0.4) \\
+  2013 & 11.1 (1) & 10.6 (2.2) & 27.9 (2.3) & 9.8 (0.8) & 17 (2) & 20.1 (0.4) \\
+  2014 & 10.6 (1) & 14.8 (3.2) & 30.6 (2.6) & 9.9 (0.8) & 20.6 (2.4) & 20 (0.4) \\
+  2015 & 9.8 (0.9) & 9.3 (2.1) & 29.1 (2.5) & 12 (0.9) & 15.2 (2.2) & 19.9 (0.4) \\
+  2016 & 12.8 (1.2) & 7.4 (1.9) & 28.7 (2.3) & 9.8 (0.7) & 18.3 (2) & 20.9 (0.5) \\
+  trend & p=0.08 & p=0.36 & p=0.92 & p=0.12 & p=0.76 & p=0.04 \\
+  growth & 3.2 (1.4) & -3.7 (3.1) & -0.8 (3.6) & 0.6 (1.1) & 0.1 (3.1) & 2.3 (0.6) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each racial/ethnic category attaining at least a bachelors degree, from 2008--2015. Also included is the p-value for Kendall's $	au$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015}
+\label{tab:bachRaceD}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllll}
+  \hline
+ & African American & American Indian & Asian/PacIsl & Hispanic & Other & White \\
+  \hline
+2008 & 19.5 (0.2) & 13.7 (0.7) & 51.4 (0.4) & 13.4 (0.1) & 29.2 (0.5) & 35 (0.1) \\
+  2009 & 19.2 (0.2) & 13.8 (0.7) & 51.3 (0.3) & 13.2 (0.2) & 30.1 (0.6) & 35.6 (0.1) \\
+  2010 & 19.4 (0.2) & 14.1 (0.5) & 51.5 (0.3) & 13.6 (0.1) & 32.4 (0.6) & 35.6 (0.1) \\
+  2011 & 20.4 (0.2) & 13.8 (0.7) & 52 (0.4) & 13.8 (0.1) & 31.1 (0.5) & 35.5 (0.1) \\
+  2012 & 20.2 (0.2) & 13.9 (0.7) & 52.9 (0.3) & 14.5 (0.1) & 33.4 (0.6) & 36.2 (0.1) \\
+  2013 & 20.6 (0.2) & 14.8 (0.7) & 53.1 (0.3) & 14.6 (0.1) & 34.6 (0.6) & 36.5 (0.1) \\
+  2014 & 21 (0.2) & 14.8 (0.7) & 53.4 (0.3) & 15 (0.1) & 34.6 (0.5) & 37.1 (0.1) \\
+  2015 & 21.7 (0.2) & 14.4 (0.8) & 54.5 (0.3) & 15.7 (0.2) & 36.9 (0.6) & 37.6 (0.1) \\
+  2016 & 22.3 (0.2) & 14.5 (0.8) & 56.1 (0.3) & 15.9 (0.1) & 36.2 (0.5) & 38.2 (0.1) \\
+  trend & p$<$0.001 & p=0.01 & p$<$0.001 & p$<$0.001 & p$<$0.001 & p$<$0.001 \\
+  growth & 2.8 (0.3) & 0.8 (1) & 4.6 (0.5) & 2.5 (0.2) & 7.1 (0.7) & 3.2 (0.1) \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each racial/ethnic category attaining at least a bachelors degree, from 2008--2015. Also included is the p-value for Kendall's $	au$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015}
+\label{tab:bachRaceH}
+\end{table}
+
+\begin{landscape}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begingroup\small
+\begin{tabular}{rlllllllllll}
+  \hline
+ & \thead{American Indian\\Deaf} & \thead{Asian/PacIsl\\Deaf} & \thead{Hispanic\\Deaf} & \thead{Other\\Deaf} & \thead{White\\Deaf} & \thead{Black\\Hearing} & \thead{American Indian\\Hearing} & \thead{Asian/PacIsl\\Hearing} & \thead{Hispanic\\Hearing} & \thead{Other\\Hearing} & \thead{White\\Hearing} \\
+  \hline
+Black Deaf & 6.9 (3.46)* & 4 (3.88) & 2.7 (1.82) & 3.1 (3.39) & 0.9 (1.57) & 0.4 (1.47) & 2.4 (1.78) & -1.4 (1.52) & 0.7 (1.45) & -3.8 (1.61)* & 0 (1.45) \\
+  American Indian Deaf &  & -2.9 (4.78) & -4.3 (3.33) & -3.8 (4.39) & -6 (3.2). & -6.5 (3.15)* & -4.5 (3.31) & -8.3 (3.18)** & -6.2 (3.15)* & -10.8 (3.22)** & -6.9 (3.14)* \\
+  Asian/PacIsl Deaf &  &  & -1.3 (3.78) & -0.9 (4.73) & -3.1 (3.66) & -3.6 (3.62) & -1.5 (3.75) & -5.4 (3.64) & -3.3 (3.61) & -7.8 (3.68)* & -4 (3.61) \\
+  Hispanic Deaf &  &  &  & 0.4 (3.26) & -1.7 (1.28) & -2.2 (1.15). & -0.2 (1.53) & -4.1 (1.21)** & -1.9 (1.13). & -6.5 (1.32)** & -2.7 (1.13)* \\
+  Other Deaf &  &  &  &  & -2.2 (3.13) & -2.7 (3.08) & -0.7 (3.24) & -4.5 (3.1) & -2.4 (3.07) & -6.9 (3.14)* & -3.1 (3.07) \\
+  White Deaf &  &  &  &  &  & -0.5 (0.67) & 1.5 (1.21) & -2.3 (0.78)** & -0.2 (0.65) & -4.8 (0.94)** & -0.9 (0.63) \\
+  Black Hearing &  &  &  &  &  &  & 2 (1.07). & -1.8 (0.54)** & 0.3 (0.33) & -4.3 (0.76)** & -0.4 (0.3) \\
+  American Indian Hearing &  &  &  &  &  &  &  & -3.8 (1.14)** & -1.7 (1.06) & -6.3 (1.26)** & -2.5 (1.05)* \\
+  Asian/PacIsl Hearing &  &  &  &  &  &  &  &  & 2.1 (0.51)** & -2.4 (0.85)** & 1.4 (0.49)** \\
+  Hispanic Hearing &  &  &  &  &  &  &  &  &  & -4.5 (0.73)** & -0.7 (0.24)** \\
+  Other Hearing &  &  &  &  &  &  &  &  &  &  & 3.8 (0.72)** \\
+   \hline
+\end{tabular}
+\endgroup
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing racial/ethnic
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, Black Deaf grew 6.9 percentage points more than American Indian Deaf}
+\label{tab:bachRaceGrowth}
+\end{table}
+
+\end{landscape}
+
+
+\clearpage
+%\subsection{Attainment Over Time by Sex}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/hsSexTime-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Male & Female \\
+  \hline
+2008 & 79.2 (0.5) & 79 (0.6) \\
+  2009 & 79.2 (0.5) & 78.4 (0.7) \\
+  2010 & 80.3 (0.5) & 77.6 (0.7) \\
+  2011 & 81.7 (0.4) & 80.1 (0.7) \\
+  2012 & 80.5 (0.5) & 79.8 (0.7) \\
+  2013 & 81.1 (0.5) & 82.1 (0.6) \\
+  2014 & 82.1 (0.4) & 82 (0.5) \\
+  2015 & 81.9 (0.5) & 82.2 (0.6) \\
+  2016 & 81.2 (0.5) & 80.9 (0.5) \\
+  growth & 2 (0.7)  & 1.9 (0.8)  \\
+  trend & p=0.01 & p=0.04 \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each gender attaining at least a high school degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Male & Female \\
+  \hline
+2008 & 85 (0.1) & 88 (0.1) \\
+  2009 & 85.3 (0.1) & 88.1 (0.1) \\
+  2010 & 85.3 (0.1) & 88 (0.1) \\
+  2011 & 85.9 (0.1) & 88.5 (0.1) \\
+  2012 & 86.2 (0.1) & 88.7 (0.1) \\
+  2013 & 86.3 (0.1) & 88.8 (0.1) \\
+  2014 & 86.5 (0.1) & 89 (0.1) \\
+  2015 & 86.6 (0.1) & 89.1 (0.1) \\
+  2016 & 86.7 (0.1) & 89.3 (0.1) \\
+  growth & 1.7 (0.1)  & 1.3 (0.1)  \\
+  trend & p$<$0.001 & p$<$0.001 \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each gender, attaining at least a high school degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlll}
+  \hline
+ & \thead{Female\\Deaf} & \thead{Male\\Hearing} & \thead{Female\\Hearing} \\
+  \hline
+Male Deaf & 0 (1.09) & 0.3 (0.71) & 0.6 (0.71) \\
+  Female Deaf &  & 0.2 (0.84) & 0.6 (0.84) \\
+  Male Hearing &  &  & 0.4 (0.15)* \\
+   \hline
+\end{tabular}
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing genders. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, Male Deaf grew 0 percentage points more than Female Deaf}
+\label{tab:hsSexGrowth}
+\end{table}
+
+
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bachSexTime-1}
+
+\end{knitrout}
+\end{center}
+
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Male & Female \\
+  \hline
+2008 & 16.5 (0.4) & 17 (0.6) \\
+  2009 & 15.4 (0.4) & 16.7 (0.5) \\
+  2010 & 15.9 (0.4) & 16.8 (0.6) \\
+  2011 & 15.1 (0.4) & 17.6 (0.7) \\
+  2012 & 15.9 (0.3) & 17.2 (0.6) \\
+  2013 & 16.3 (0.4) & 20.7 (0.6) \\
+  2014 & 17.3 (0.4) & 19.4 (0.6) \\
+  2015 & 16.8 (0.4) & 19.5 (0.5) \\
+  2016 & 17.3 (0.5) & 20.5 (0.6) \\
+  growth & 0.7 (0.7)  & 3.5 (0.8)  \\
+  trend & p=0.12 & p=0.01 \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each gender attaining at least a bachelors degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & Male & Female \\
+  \hline
+2008 & 29.6 (0.1) & 30.9 (0.1) \\
+  2009 & 29.6 (0.1) & 31.4 (0.1) \\
+  2010 & 29.4 (0.1) & 31.7 (0.1) \\
+  2011 & 29.5 (0.1) & 31.8 (0.1) \\
+  2012 & 29.9 (0.1) & 32.6 (0.1) \\
+  2013 & 29.9 (0.1) & 33 (0.1) \\
+  2014 & 30.2 (0.1) & 33.5 (0.1) \\
+  2015 & 30.7 (0.1) & 34.2 (0.1) \\
+  2016 & 31.1 (0.1) & 34.9 (0.1) \\
+  growth & 1.5 (0.1)  & 4 (0.1)  \\
+  trend & p=0.002 & p$<$0.001 \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each gender, attaining at least a bachelors degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlll}
+  \hline
+ & \thead{Female\\Deaf} & \thead{Male\\Hearing} & \thead{Female\\Hearing} \\
+  \hline
+Male Deaf & -2.7 (1.07)* & -0.8 (0.69) & -3.3 (0.69)** \\
+  Female Deaf &  & 2 (0.85)* & -0.6 (0.84) \\
+  Male Hearing &  &  & -2.5 (0.2)** \\
+   \hline
+\end{tabular}
+\caption{Differences in growth from 2008 to 2015 between deaf and hearing genders. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance, Male Deaf grew 2.7 percentage points less than Female Deaf}
+\label{tab:bachSexGrowth}
+\end{table}
+
+
+
+\clearpage
+%\subsection{Attainment Over Time by Race/Ethicity and Sex}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/hsRaceSex-1}
+
+\end{knitrout}
+
+\end{center}
+
+\begin{landscape}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:45 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllllllllll}
+  \hline
+ & \thead{African American\\Male} & \thead{African American\\Female} & \thead{American Indian\\Male} & \thead{American Indian\\Female} & \thead{Asian/PacIsl\\Male} & \thead{Asian/PacIsl\\Female} & \thead{Hispanic\\Male} & \thead{Hispanic\\Female} & \thead{Other\\Male} & \thead{Other\\Female} & \thead{White\\Male} & \thead{White\\Female} \\
+  \hline
+2008 & 70.2 (1.6) & 73.4 (2.1) & 82.1 (3.2) & 73.9 (4.4) & 79.5 (3) & 71.1 (3.5) & 57.7 (1.8) & 57.1 (2.3) & 81.3 (3.4) & 82.3 (3.4) & 83.6 (0.5) & 84.7 (0.8) \\
+  2009 & 67.3 (1.5) & 71.5 (2.1) & 76.1 (4.3) & 71.9 (6.2) & 78.9 (3.2) & 66.1 (3.9) & 59.5 (2.1) & 60.8 (2.5) & 78.9 (3.3) & 76.6 (4.9) & 83.6 (0.5) & 83.6 (0.8) \\
+  2010 & 71.8 (1.6) & 71.9 (2) & 83.3 (3.6) & 82.9 (4.1) & 75.6 (3.1) & 69.1 (4.5) & 60.7 (1.7) & 56.3 (2.4) & 84.1 (2.8) & 83.1 (6.4) & 84.1 (0.6) & 82.8 (0.8) \\
+  2011 & 75.8 (1.7) & 71.5 (2.3) & 82.8 (3.3) & 79 (5.9) & 79.3 (2.8) & 72 (3.7) & 64.5 (1.8) & 61.6 (2.4) & 82.8 (2.9) & 75.6 (3.8) & 85.2 (0.5) & 86.1 (0.7) \\
+  2012 & 73.1 (1.6) & 73.1 (2.3) & 73 (4.7) & 77.4 (5.4) & 76.5 (2.7) & 72.2 (4) & 62.1 (1.8) & 57.9 (2.2) & 79.1 (3.6) & 86 (4) & 84.9 (0.5) & 85.9 (0.7) \\
+  2013 & 74.6 (1.8) & 80.7 (1.7) & 82.7 (3.8) & 78.7 (3.4) & 81.1 (2.6) & 72 (3.8) & 61.4 (1.9) & 62.5 (2.2) & 84.3 (3.2) & 88.9 (2.9) & 85.1 (0.5) & 86.7 (0.6) \\
+  2014 & 73 (2.1) & 79.5 (1.9) & 76.8 (4) & 70 (6) & 82.6 (2.5) & 75.1 (3.7) & 63.9 (1.7) & 62.3 (2.1) & 85.1 (3) & 81 (4.6) & 86.4 (0.5) & 87.1 (0.6) \\
+  2015 & 76.4 (1.9) & 77.8 (1.7) & 82.3 (3.2) & 74.7 (6.2) & 78.3 (2.8) & 76.5 (3) & 61 (1.8) & 65.8 (2.1) & 85 (2.2) & 83.3 (3.9) & 86.2 (0.5) & 87.1 (0.6) \\
+  2016 & 74.1 (1.9) & 78.6 (1.8) & 76.7 (4.5) & 82.4 (4.6) & 81.4 (2.5) & 69.4 (3.6) & 62.9 (1.5) & 62.3 (2) & 84 (2.4) & 87.8 (2.8) & 85.7 (0.5) & 86.2 (0.6) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each racial/ethnic category and gender attaining at least a high school degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:46 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllllllllll}
+  \hline
+ & \thead{African American\\Male} & \thead{African American\\Female} & \thead{American Indian\\Male} & \thead{American Indian\\Female} & \thead{Asian/PacIsl\\Male} & \thead{Asian/PacIsl\\Female} & \thead{Hispanic\\Male} & \thead{Hispanic\\Female} & \thead{Other\\Male} & \thead{Other\\Female} & \thead{White\\Male} & \thead{White\\Female} \\
+  \hline
+2008 & 83.2 (0.3) & 87 (0.2) & 79.7 (1.1) & 84.2 (1.1) & 90.2 (0.3) & 88.2 (0.2) & 60.5 (0.3) & 65.6 (0.2) & 88.5 (0.6) & 90.3 (0.5) & 92 (0.1) & 94 (0.1) \\
+  2009 & 83.7 (0.3) & 87.4 (0.2) & 82.9 (1.1) & 85.6 (0.9) & 90.3 (0.3) & 88.5 (0.2) & 61.3 (0.3) & 65.7 (0.2) & 89.9 (0.5) & 91.6 (0.5) & 92.3 (0.1) & 94 (0.1) \\
+  2010 & 83.4 (0.2) & 87.8 (0.2) & 80.7 (1) & 83.6 (0.8) & 90.7 (0.2) & 88.7 (0.3) & 61.6 (0.3) & 66.8 (0.2) & 90 (0.5) & 90.8 (0.5) & 92.3 (0.1) & 94.2 (0.1) \\
+  2011 & 84.1 (0.2) & 88.1 (0.2) & 82.2 (0.9) & 86.4 (0.8) & 90.1 (0.3) & 88.5 (0.3) & 63.3 (0.3) & 67.3 (0.3) & 90.1 (0.4) & 91.9 (0.4) & 92.5 (0.1) & 94.5 (0.1) \\
+  2012 & 85 (0.2) & 88.8 (0.2) & 82.9 (1) & 85.9 (0.9) & 90.6 (0.2) & 89.2 (0.2) & 64.2 (0.2) & 68.4 (0.2) & 90 (0.5) & 92.3 (0.3) & 92.7 (0.1) & 94.6 (0.1) \\
+  2013 & 85 (0.2) & 88.9 (0.2) & 81.3 (1.1) & 85.6 (0.8) & 90.8 (0.3) & 89.3 (0.2) & 65 (0.2) & 69.1 (0.2) & 91.7 (0.4) & 92.8 (0.4) & 92.8 (0.1) & 94.6 (0.1) \\
+  2014 & 85.5 (0.2) & 88.9 (0.2) & 83.5 (0.9) & 85.7 (1) & 91 (0.2) & 89.6 (0.2) & 65.8 (0.3) & 70.1 (0.2) & 90.6 (0.5) & 93 (0.5) & 93 (0.1) & 94.8 (0.1) \\
+  2015 & 85.3 (0.2) & 89.6 (0.2) & 82.8 (1) & 85.3 (0.9) & 91.6 (0.2) & 89.7 (0.2) & 66.2 (0.2) & 70.6 (0.3) & 92.3 (0.4) & 93.8 (0.3) & 93 (0.1) & 94.8 (0.1) \\
+  2016 & 85.5 (0.2) & 89.7 (0.2) & 83.2 (1) & 87.5 (0.8) & 91.2 (0.2) & 90.1 (0.2) & 67.2 (0.2) & 71.5 (0.3) & 91.3 (0.4) & 93.1 (0.3) & 92.9 (0.1) & 94.9 (0.1) \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each racial/ethnic category and gender, 25--64, attaining at least a high school degree, from 2008--2015}
+\end{table}
+
+\end{landscape}
+
+
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/bachRaceSex-1}
+
+\end{knitrout}
+\end{center}
+\begin{landscape}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:46 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllllllllll}
+  \hline
+ & \thead{African American\\Male} & \thead{African American\\Female} & \thead{American Indian\\Male} & \thead{American Indian\\Female} & \thead{Asian/PacIsl\\Male} & \thead{Asian/PacIsl\\Female} & \thead{Hispanic\\Male} & \thead{Hispanic\\Female} & \thead{Other\\Male} & \thead{Other\\Female} & \thead{White\\Male} & \thead{White\\Female} \\
+  \hline
+2008 & 8.7 (1.2) & 10.6 (1.5) & 11.2 (3.2) & 10.8 (3.7) & 28.3 (3.5) & 30.6 (3.7) & 9.3 (1.1) & 9.1 (1.3) & 16.9 (3) & 19.8 (3.8) & 18.3 (0.6) & 19 (0.8) \\
+  2009 & 8.6 (1) & 10.2 (1.3) & 15.1 (3) & 22 (5.6) & 26 (2.5) & 27.7 (3.4) & 9.2 (0.9) & 9.4 (1.4) & 17.3 (3.3) & 11.3 (3.4) & 16.6 (0.5) & 18.9 (0.7) \\
+  2010 & 8.9 (1.1) & 9.9 (1.4) & 6.2 (2.2) & 9.7 (3.6) & 23.2 (3) & 25.4 (3.6) & 8.4 (1.1) & 9.6 (1.2) & 17.1 (3.1) & 18.4 (4.1) & 17.7 (0.4) & 19 (0.8) \\
+  2011 & 7.2 (1.1) & 11.5 (1.7) & 10.8 (2.8) & 8.2 (2.7) & 33.3 (4) & 29 (3.6) & 10.4 (1.3) & 7.1 (1.2) & 11.9 (2.3) & 17.8 (4.7) & 16.5 (0.5) & 20.3 (0.8) \\
+  2012 & 10.3 (1.2) & 9.9 (1.3) & 7.8 (2.5) & 18.2 (9.9) & 32.1 (3.2) & 27.2 (3.2) & 7.9 (1.1) & 7.3 (1.2) & 16.4 (2.7) & 19.9 (4.8) & 17.5 (0.5) & 19.9 (0.8) \\
+  2013 & 10.6 (1.5) & 11.7 (1.4) & 10.7 (3.4) & 10.4 (2.8) & 28.4 (3.1) & 27.4 (3.4) & 9.4 (1.2) & 10.3 (1.3) & 18.2 (2.9) & 15.3 (3) & 17.8 (0.5) & 24.5 (0.8) \\
+  2014 & 10 (1.3) & 11.2 (1.3) & 17.3 (4.8) & 11.5 (3.7) & 31.1 (3) & 30 (3.9) & 8.9 (1) & 11.5 (1.6) & 20.5 (3.4) & 20.6 (3.6) & 19 (0.5) & 21.9 (0.8) \\
+  2015 & 8 (1.1) & 12.1 (1.5) & 11.4 (3) & 6.3 (2.5) & 30.8 (3.1) & 26.7 (3.8) & 11.8 (1.1) & 12.1 (1.2) & 14.8 (3) & 16 (3.5) & 18.4 (0.5) & 22.7 (0.7) \\
+  2016 & 10.9 (1.4) & 15.5 (1.7) & 8.9 (2.8) & 5.3 (2.7) & 29.5 (3.5) & 27.6 (3.3) & 8.5 (0.8) & 11.7 (1.3) & 14.1 (2.4) & 25 (4) & 19.6 (0.6) & 23.1 (0.8) \\
+   \hline
+\end{tabular}
+\caption{Percentages of deaf Americans of each racial/ethnic category and gender attaining at least a bachelors degree, from 2008--2015}
+\end{table}
+% latex table generated in R 3.4.2 by xtable 1.8-2 package
+% Mon Nov 20 16:30:46 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllllllllllll}
+  \hline
+ & \thead{African American\\Male} & \thead{African American\\Female} & \thead{American Indian\\Male} & \thead{American Indian\\Female} & \thead{Asian/PacIsl\\Male} & \thead{Asian/PacIsl\\Female} & \thead{Hispanic\\Male} & \thead{Hispanic\\Female} & \thead{Other\\Male} & \thead{Other\\Female} & \thead{White\\Male} & \thead{White\\Female} \\
+  \hline
+2008 & 17.6 (0.3) & 21.2 (0.3) & 10.9 (0.9) & 16.1 (1) & 52.8 (0.5) & 50.3 (0.4) & 12.2 (0.2) & 14.6 (0.2) & 27.9 (0.8) & 30.4 (0.7) & 34.8 (0.1) & 35.2 (0.1) \\
+  2009 & 16.7 (0.2) & 21.4 (0.2) & 12.4 (0.9) & 15.2 (0.9) & 52.9 (0.4) & 49.8 (0.4) & 11.9 (0.2) & 14.5 (0.2) & 28.8 (0.8) & 31.4 (0.8) & 35.1 (0.1) & 36 (0.1) \\
+  2010 & 16.6 (0.3) & 21.8 (0.2) & 14 (0.9) & 14.3 (0.7) & 52.4 (0.4) & 50.8 (0.4) & 12 (0.2) & 15.2 (0.2) & 30.7 (0.8) & 34 (0.8) & 34.9 (0.1) & 36.4 (0.1) \\
+  2011 & 17.9 (0.3) & 22.5 (0.2) & 12.2 (0.8) & 15.3 (0.8) & 52.7 (0.4) & 51.4 (0.4) & 12.4 (0.2) & 15.4 (0.2) & 29.5 (0.7) & 32.6 (0.8) & 34.6 (0.2) & 36.4 (0.2) \\
+  2012 & 17.3 (0.2) & 22.8 (0.3) & 12.1 (1) & 15.7 (1) & 53.4 (0.5) & 52.5 (0.3) & 13 (0.2) & 16.1 (0.2) & 31.2 (0.8) & 35.4 (0.8) & 35.2 (0.1) & 37.2 (0.1) \\
+  2013 & 17.3 (0.2) & 23.5 (0.3) & 13.8 (1) & 15.7 (0.9) & 53.9 (0.4) & 52.3 (0.4) & 13 (0.2) & 16.3 (0.2) & 32.9 (0.8) & 36.1 (0.7) & 35.3 (0.1) & 37.8 (0.1) \\
+  2014 & 18.1 (0.3) & 23.6 (0.3) & 13.7 (1) & 15.8 (0.9) & 53.9 (0.4) & 53 (0.3) & 13.5 (0.2) & 16.5 (0.2) & 32 (0.7) & 37 (0.8) & 35.6 (0.1) & 38.6 (0.1) \\
+  2015 & 18.6 (0.3) & 24.5 (0.3) & 13.3 (1.1) & 15.3 (0.9) & 55.3 (0.4) & 53.7 (0.3) & 13.8 (0.2) & 17.5 (0.2) & 34.2 (0.8) & 39.4 (0.7) & 36 (0.1) & 39.2 (0.1) \\
+  2016 & 19.1 (0.2) & 25.1 (0.3) & 13.2 (0.9) & 15.6 (1) & 56.9 (0.4) & 55.4 (0.4) & 14 (0.2) & 17.8 (0.2) & 33.8 (0.7) & 38.4 (0.7) & 36.4 (0.1) & 40.1 (0.1) \\
+   \hline
+\end{tabular}
+\caption{Percentages of hearing Americans of each racial/ethnic category and gender, 25--64, attaining at least a bachelors degree, from 2008--2015}
+\end{table}
+
+\end{landscape}
+\FloatBarrier
+\end{document}
