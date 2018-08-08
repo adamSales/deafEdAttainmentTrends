@@ -1,29 +1,34 @@
 library(tidyr)
 if(!exists('ya')) ya <- FALSE
 if(ya){
-    load('output/estsOverTime25.34.RData')
-    load('output/estsOverTimeAge25.34.Rdata')
+    load('output/estsbyYearYA.RData')
+    load('output/estsbyYearAgeYA.Rdata')
 } else{
-    load('output/estsOverTime.RData')
-    load('output/estsOverTimeAge.RData')
+    load('output/estsbyYear.RData')
+    load('output/estsbyYearAge.RData')
 }
 
 for(i in 1:length(overTime)){
-    for(j in 1:length(overTime[[1]])){
+    for(j in 1:length(overTime[[i]])){
         overTime[[i]][[j]]$year <- i
-
     }
-    for(j in 1:length(overTimeAge[[1]])){
+    for(j in 1:length(overTimeAge[[i]])){
         overTimeAge[[i]][[j]]$year <- i
     }
-
-    overTime[[i]]$hs25.29 <- overTime[[i]]$hs25.29[-grep('FALSE',rownames(overTime[[i]]$hs25.29)),]
-    overTime[[i]]$bach25.29 <- overTime[[i]]$bach25.29[-grep('FALSE',rownames(overTime[[i]]$bach25.29)),]
-    overTime[[i]]$hs25.29[['I(AGEP < 30)']] <- overTime[[i]]$bach25.29[['I(AGEP < 30)']] <- NULL
-#        overTimeAge[[i]]$hs25.29[['I(AGEP < 30)']] <-
-#            overTimeAge[[i]]$bach25.29[['I(AGEP < 30)']] <- NULL
-
+    for(lev in c('hs','bach'))
+        for(sex in 1:2){
+            overTime[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
+                subset(overTime[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
+            overTimeAge[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
+                subset(overTimeAge[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
+        }
+    if(!ya){
+        overTime[[i]]$hs25.29 <- overTime[[i]]$hs25.29[-grep('FALSE',rownames(overTime[[i]]$hs25.29)),]
+        overTime[[i]]$bach25.29 <- overTime[[i]]$bach25.29[-grep('FALSE',rownames(overTime[[i]]$bach25.29)),]
+        overTime[[i]]$hs25.29[['I(AGEP < 30)']] <- overTime[[i]]$bach25.29[['I(AGEP < 30)']] <- NULL
+    }
 }
+
 
 
 
@@ -143,7 +148,7 @@ tabFinish <- function(anal1,deaf=NULL,moe=TRUE){ #ests,ses,moe,strs){
         strs <- cbind(anal1$trendStars,c('',''))
         rownames(strs) <- c('unadj','adj')
         diffStars <- anal1$diffStars
-        ss <- c(anal1$deafSS,anal1$hearSS)
+        ss <- if('SS'%in%names(anal1)) anal1$SS else c(anal1$deafSS,anal1$hearSS)
     } else if(deaf){
         ests <- anal1$deaf$ests
         ses <- anal1$deaf$ses
@@ -177,23 +182,25 @@ tabFinish <- function(anal1,deaf=NULL,moe=TRUE){ #ests,ses,moe,strs){
     tab
 }
 
+pval <- function(top,bottom)
+    2*pnorm(as.numeric(-abs(top/bottom)))
+
 diffP <- function(ests,ses){
     est <- ests[2]-ests[1]
     se <- sqrt(ses[2]^2+ses[1]^2)
-    2*pnorm(-abs(est/se))
+    pval(est,se)
 }
 
 diffFun <- function(ests,ses,moe,diffStars=''){
     est <- ests[1]-ests[2]
     se <- sqrt(ses[2]^2+ses[1]^2)
-    p <- 2*pnorm(-abs(est/se))
+    p <- pval(est,se)
 
     out <- round(est,1)
     out <- if(moe) paste(out,'$\\pm$',round(1.96*se,1)) else paste0(out,' (',round(se,1),')')
     out <- paste0(out,diffStars)
     out
 }
-
 
 
 
@@ -224,10 +231,10 @@ figFun <- function(nnn,ot,chg=FALSE,erbr=FALSE,...){
         out <- ggplot(ccc,aes(Year,y,color=sub,shape=deaf,linetype=deaf))+geom_point()+geom_line()
     } else{
         names(ccc)[1:2] <- if(length(unique(ccc[,1]))>=length(unique(ccc[,2])))  c('sub2','sub1') else c('sub1','sub2')
-        out <- ggplot(ccc,aes(Year,y,color=sub2,shape=deaf,linetype=deaf))+geom_point()+geom_line()+facet_grid(~sub1)+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+        out <- ggplot(ccc,aes(Year,y,color=sub2,shape=deaf,linetype=deaf))+geom_point(position='dodge')+geom_line()+facet_grid(~sub1)+theme(axis.text.x = element_text(angle = 90, hjust = 1))
     }
     if(chg) out <- out+geom_hline(yintercept=0,linetype=2)+ylab('Change Since 2008 (Percentage Points)')
-    if(erbr) out <- out+geom_errorbar(aes(ymin=y-1.96*se2,ymax=y+1.96*se2,width=0.2))
+    if(erbr) out <- out+geom_errorbar(aes(ymin=y-1.96*se,ymax=y+1.96*se,width=0.2),position='dodge')
     out+scale_x_continuous(breaks=unique(ccc$Year))+labs(color='',shape='',linetype='')
 }
 
@@ -410,4 +417,10 @@ stars <- function(rej,trend,nn,cc=1){
     ifelse(rej[[3]][[trend]][[nn]][cc],'***',
            ifelse(rej[[2]][[trend]][[nn]][cc],'**',
                   ifelse(rej[[1]][[trend]][[nn]][cc],'*','')))
+}
+
+
+getSampleSizes <- function(nnn,ot,deaf){
+    ccc <- combineDat(nnn,ot,deaf)
+    with(ccc,sapply(unique(tdat[[subCols[1]]]), function(x) round(mean(tdat$Freq[tdat[[subCols[1]]]==x]))))
 }

@@ -26,8 +26,8 @@ source('trends2.r')
 \newline \newline \newline
 ```{r analyses,include=FALSE}
 
-subs <- c('Tot',#'25.29',
-          'ByAgeCat','Sex','Race','RaceSex')
+subs <- c('Tot',#'25.29','ByAgeCat',
+          'Sex','Race','RaceM','RaceF')#,'RaceSex')
 
 anal <- list()
 pTrend <- list()
@@ -38,23 +38,25 @@ for(s in subs){
         if(s%in%c('Tot','25.29')){
             anal[[nn]] <- tabFun(nn,overTime,retEst=TRUE)
             pTrend[[nn]] <- with(anal[[nn]],
-                                 2*pnorm(-abs(ests[c('Trend','Trend (Adj)'),1]/
-                                             ses[c('Trend','Trend (Adj)'),1])))
+                                 pval(ests[c('Trend','Trend (Adj)'),1],ses[c('Trend','Trend (Adj)'),1]))
             pDiff[[nn]] <- with(anal[[nn]],
                                 c(unadj=diffP(ests['Trend',],ses['Trend',]),
                                   adj=diffP(ests['Trend (Adj)',],ses['Trend (Adj)',])))
+            anal[[nn]]$SS <- getSampleSizes(nn,overTime,NULL)
         }
         else{
             anal[[nn]] <- list(deaf=tabFun(nn,overTime,deaf=TRUE,retEst=TRUE),
                                hear=tabFun(nn,overTime,deaf=FALSE,retEst=TRUE))
             pTrend[[nn]] <- with(anal[[nn]]$deaf,
-                                 cbind(unadj=2*pnorm(-abs(ests['Trend',]/ses['Trend',])),
-                                       adj=2*pnorm(-abs(ests['Trend (Adj)',]/ses['Trend (Adj)',]))))
+                                 cbind(unadj=pval(ests['Trend',],ses['Trend',]),
+                                       adj=pval(ests['Trend (Adj)',],ses['Trend (Adj)',])))
             pDiff[[nn]] <- with(anal[[nn]], do.call('rbind',lapply(1:ncol(deaf[[1]]), function(cc)
                 c(unadj=diffP(c(deaf$ests['Trend',cc],hear$ests['Trend',cc]),
                       c(deaf$ses['Trend',cc],hear$ses['Trend',cc])),
                   adj=diffP(c(deaf$ests['Trend (Adj)',cc],hear$ests['Trend (Adj)',cc]),
-                      c(deaf$ses['Trend (Adj)',cc],hear$ses['Trend (Adj)',cc]))))))
+                            c(deaf$ses['Trend (Adj)',cc],hear$ses['Trend (Adj)',cc]))))))
+            anal[[nn]]$deafSS <- getSampleSizes(nn,overTime,TRUE)[colnames(anal[[nn]]$deaf$ests)]
+            anal[[nn]]$hearSS <- getSampleSizes(nn,overTime,FALSE)[colnames(anal[[nn]]$deaf$ests)]
         }
     }
 }
@@ -78,20 +80,6 @@ for(nn in names(anal)){
                stars(rejAdj,'diff',nn,1))
 }
 
-### add sample sizes
-ssYear <- function(ss,nn,column){
-    bb <- as.data.frame(ss[[nn]])
-    if('TRUE'%in%bb[,2]) bb <- bb[bb[,2]=='TRUE',]
-    bb$Freq[bb$DEAR==column]
-    ## if(length(dim(ss[[nn]]))==2) return(ss[[nn]][,column])
-    ## if(length(dim(ss[[nn]]))==1) return(ss[[nn]][column])
-    ## return(as.data.frame(ss[[nn]][,,column])$Freq)
-}
-
-for(nn in names(anal)){
-    anal[[nn]]$deafSS <- round(colMeans(do.call('rbind',lapply(sampleSizes,ssYear,nn=nn,column=1))))
-    anal[[nn]]$hearSS <- round(colMeans(do.call('rbind',lapply(sampleSizes,ssYear,nn=nn,column=2))))
-}
 
 ```
 
@@ -234,206 +222,7 @@ figFun('bachTot',overTime,chg=TRUE,erbr=TRUE)+ggtitle('Bachelor\'s Degree or Equ
 
 
 
-## Attainment By Age
 
-### High School
-
-\newline \newline \newline
-```{r HSbyAgeCatDeaf,results='markdown'}
-kable(tabFinish(anal[['hsByAgeCat']],deaf=TRUE))
-```
-
-Table: Percentage of deaf Americans in each age category attaining a
-High School diploma or equivalent.
-
-
-
-\newline \newline \newline
-```{r HSbyAgeCatHear,results='markdown'}
-kable(tabFinish(anal[['hsByAgeCat']],deaf=FALSE))
-```
-
-Table: Percentage of hearing Americans in each age category attaining a
-High School diploma or equivalent.
-
-
-\newline \newline \newline
-```{r HSbyAgeDeafHearDiff,results='markdown'}
-kable(diffDeafHear(anal[['hsByAgeCat']]))
-```
-
-Table: Differences in growth and trends between deaf and hearing
-Americans for each age category. Positive Differences indicate faster
-growth for deaf Americans.
-
-<!-- #### Trend and Growth differences between Age Categories for Deaf Americans -->
-<!-- \newline \newline \newline
-```{r HSbyAgeSubDeaf1,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyAgeSubDeaf2,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyAgeSubDeaf3,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-<!-- #### Trend and Growth differences between Age Categories for Hearing Americans -->
-<!-- \newline \newline \newline
-```{r HSbyAgeSubHearing1,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyAgeSubHearing2,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyAgeSubHearing3,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-
-\newline \newline \newline
-```{r HSByAgeCatFig,fig.cap="High School completion by age group over time. Error bars are approximate 95% confidence intervals."}
-figFun('hsByAgeCat',overTime,erbr=FALSE)+ylab('High School Completion (%)')
-```
-\newline \newline \newline
-```{r HSByAgeCatFigChange,fig.cap="Change in High School completion by age group over time. Error bars are approximate 95% confidence intervals."}
-figFun('hsByAgeCat',overTime,chg=TRUE,erbr=FALSE)+ggtitle('High School Diploma or Equivalent')
-```
-
-### Bachelors
-\newline \newline \newline
-```{r BAByAgeCatDeaf,results='markdown'}
-kable(tabFinish(anal[['bachByAgeCat']],TRUE))
-```
-
-Table: Percentage of deaf Americans in each age category attaining a
-Bachelor's degree.
-
-
-
-\newline \newline \newline
-```{r BAByAgeCatHear,results='markdown'}
-kable(tabFinish(anal[['bachByAgeCat']],deaf=FALSE))
-
-```
-
-Table: Percentage of hearing Americans in each age category attaining a
-Bachelor's degree.
-
-
-
-\newline \newline \newline
-```{r BACHbyAgeDeafHearDiff,results='markdown'}
-kable(diffDeafHear(anal[['bachByAgeCat']]))
-```
-
-Table: Differences in growth and trends between deaf and hearing
-Americans for each age category. Positive Differences indicate faster
-growth for deaf Americans.
-
-<!-- #### Trend and Growth differences between Age Categories for Deaf Americans -->
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubDeaf1,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubDeaf2,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubDeaf3,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-<!-- #### Trend and Growth differences between Age Categories for Hearing Americans -->
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubHearing1,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubHearing2,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHbyAgeSubHearing3,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-
-
-
-\newline \newline \newline
-```{r BAByAgeCatFig,fig.cap="High School completion by age group over time. Error bars are approximate 95% confidence intervals."}
-figFun('bachByAgeCat',overTime,erbr=FALSE)+ylab('Bachelor\'s Degree Attainment (%)')
-```
-\newline \newline \newline
-```{r BAByAgeCatFigChange,fig.cap="Change in Bachelor\'s degree by age group attainment over time. Error bars are approximate 95% confidence intervals."}
-figFun('bachByAgeCat',overTime,chg=TRUE,erbr=FALSE)+ggtitle('Bachelor\'s Degree or Equivalent')
-```
 
 ## Attainment By Gender
 
@@ -551,62 +340,6 @@ Table: Differences in growth and trends between deaf and hearing
 Americans for each age category. Positive Differences indicate faster
 growth for deaf Americans.
 
-<!-- #### Trend and Growth differences between Age Categories for Deaf Americans -->
-<!-- \newline \newline \newline
-```{r HSbyRaceSubDeaf1,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyRaceSubDeaf2,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyRaceSubDeaf3,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-<!-- #### Trend and Growth differences between Age Categories for Hearing Americans -->
-<!-- \newline \newline \newline
-```{r HSbyRaceSubHearing1,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyRaceSubHearing2,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r HSbyRaceSubHearing3,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
 
 \newline \newline \newline
 ```{r HSRaceFig,fig.cap="High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
@@ -630,7 +363,6 @@ Bachelor's degree.
 
 \newline \newline \newline
 ```{r BARaceHear,results='markdown'}
-tabH <- tabFun('bachRace',overTime,deaf=FALSE)
 kable(tabFinish(anal[['bachRace']],FALSE))
 ```
 
@@ -647,62 +379,6 @@ Table: Differences in growth and trends between deaf and hearing
 Americans for each age category. Positive Differences indicate faster
 growth for deaf Americans.
 
-<!-- #### Trend and Growth differences between Race/Ethnicity Categories for Deaf Americans -->
-<!-- \newline \newline \newline
-```{r BACHRaceDeaf1,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHRaceDeaf2,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHRaceDeaf3,results='markdown'} -->
-<!-- kable(diffSub(estsSeD$ests,estsSeD$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between deaf Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-
-<!-- #### Trend and Growth differences between Age Categories for Hearing Americans -->
-<!-- \newline \newline \newline
-```{r BACHRaceSubHearing1,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Growth')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in growth between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHRaceSubHearing2,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
-
-<!-- \newline \newline \newline
-```{r BACHHearing3,results='markdown'} -->
-<!-- kable(diffSub(estsSeH$ests,estsSeH$ses,varb='Trend (Adj)')) -->
-<!-- ``` -->
-
-<!-- Table: Differences in age-adjusted trends between hearing Americans in each -->
-<!-- age category. Negative differences indicate faster growth for the -->
-<!-- row category. -->
 
 \newline \newline \newline
 ```{r BARaceFig,fig.cap="High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
@@ -720,10 +396,7 @@ figFun('bachRace',overTime,chg=TRUE,erbr=FALSE)+ggtitle('Bachelor\'s Degree or E
 #### Deaf Female
 \newline \newline \newline
 ```{r HSRaceSexDeafF,results='markdown'}
-tabDb <- tabFinish(anal[['hsRaceSex']],TRUE)
-ftabD <- tabDb[,grep('Female',colnames(tabDb))]
-colnames(ftabD) <- sub('Female ','',colnames(ftabD))
-kable(ftabD)
+kable(tabFinish(anal[['hsRaceF']],TRUE))
 ```
 
 Table: Percentage of female deaf Americans by race/ethnicity attaining a
@@ -732,9 +405,7 @@ High School diploma or equivalent.
 #### Deaf Male
 \newline \newline \newline
 ```{r HSRaceSexDeafM,results='markdown'}
-mtabD <- tabDb[,grep('Male',colnames(tabDb))]
-colnames(mtabD) <- sub('Male ','',colnames(mtabD))
-kable(mtabD)
+kable(tabFinish(anal[['hsRaceF']],TRUE))
 ```
 
 Table: Percentage of male deaf Americans by race/ethnicity attaining a
