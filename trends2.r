@@ -1,34 +1,4 @@
 library(tidyr)
-if(!exists('ya')) ya <- FALSE
-if(ya){
-    load('output/estsbyYearYA.RData')
-    load('output/estsbyYearAgeYA.Rdata')
-} else{
-    load('output/estsbyYear.RData')
-    load('output/estsbyYearAge.RData')
-}
-
-for(i in 1:length(overTime)){
-    for(j in 1:length(overTime[[i]])){
-        overTime[[i]][[j]]$year <- i
-    }
-    for(j in 1:length(overTimeAge[[i]])){
-        overTimeAge[[i]][[j]]$year <- i
-    }
-    for(lev in c('hs','bach'))
-        for(sex in 1:2){
-            overTime[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
-                subset(overTime[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
-            overTimeAge[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
-                subset(overTimeAge[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
-        }
-    if(!ya){
-        overTime[[i]]$hs25.29 <- overTime[[i]]$hs25.29[-grep('FALSE',rownames(overTime[[i]]$hs25.29)),]
-        overTime[[i]]$bach25.29 <- overTime[[i]]$bach25.29[-grep('FALSE',rownames(overTime[[i]]$bach25.29)),]
-        overTime[[i]]$hs25.29[['I(AGEP < 30)']] <- overTime[[i]]$bach25.29[['I(AGEP < 30)']] <- NULL
-    }
-}
-
 
 
 
@@ -414,9 +384,10 @@ mult <- function(pTrendL,pDiffL,alpha,adj){
 }
 
 stars <- function(rej,trend,nn,cc=1){
-    ifelse(rej[[3]][[trend]][[nn]][cc],'***',
-           ifelse(rej[[2]][[trend]][[nn]][cc],'**',
-                  ifelse(rej[[1]][[trend]][[nn]][cc],'*','')))
+    ifelse(rej$`0.001`[[trend]][[nn]][cc],'***',
+           ifelse(rej$`0.01`[[trend]][[nn]][cc],'**',
+           ifelse(rej$`0.05`[[trend]][[nn]][cc],'*',
+                  ifelse(rej$`0.1`[[trend]][[nn]][cc],'.',''))))
 }
 
 

@@ -81,5 +81,5 @@ overTime <- lapply(otBoth,function(x) x$pooled)
 save(overTime,file=ifelse(ya,'output/estsbyYearYA.RData','output/estsbyYear.RData'))
 
 overTimeAge <- lapply(otBoth,function(x) x$age)
-save(overTimeAge,file=ifelse(ya,'output/estsOverTimeAgeYA.RData','output/estsOverTimeAge.RData'))
+save(overTimeAge,file=ifelse(ya,'output/estsbyYearAgeYA.RData','output/estsbyYearAge.RData'))
 

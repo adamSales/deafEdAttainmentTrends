@@ -11,7 +11,7 @@ library(ggplot2)
 library(rmarkdown)
 
 opts_chunk$set(
-echo=FALSE,results='hide',warning = FALSE,message = FALSE,error=FALSE,cache=TRUE
+echo=FALSE,results='hide',warning = FALSE,message = FALSE,error=FALSE,cache=FALSE
 )
 
 ```
@@ -20,6 +20,38 @@ echo=FALSE,results='hide',warning = FALSE,message = FALSE,error=FALSE,cache=TRUE
 ```{r sourceCode,include=FALSE}
 ya <- TRUE
 source('trends2.r')
+```
+
+```{r loadEsts,include=FALSE}
+if(ya){
+    load('output/estsbyYearYA.RData')
+    load('output/estsbyYearAgeYA.Rdata')
+} else{
+    load('output/estsbyYear.RData')
+    load('output/estsbyYearAge.RData')
+}
+
+for(i in 1:length(overTime)){
+    for(j in 1:length(overTime[[i]])){
+        overTime[[i]][[j]]$year <- i
+    }
+    for(j in 1:length(overTimeAge[[i]])){
+        overTimeAge[[i]][[j]]$year <- i
+    }
+    for(lev in c('hs','bach'))
+        for(sex in 1:2){
+            overTime[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
+                subset(overTime[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
+            overTimeAge[[i]][[paste0(lev,'Race',c('M','F')[sex])]] <-
+                subset(overTimeAge[[i]][[paste0(lev,'RaceSex')]],SEX==sex,select=-SEX)
+        }
+    if(!ya){
+        overTime[[i]]$hs25.29 <- overTime[[i]]$hs25.29[-grep('FALSE',rownames(overTime[[i]]$hs25.29)),]
+        overTime[[i]]$bach25.29 <- overTime[[i]]$bach25.29[-grep('FALSE',rownames(overTime[[i]]$bach25.29)),]
+        overTime[[i]]$hs25.29[['I(AGEP < 30)']] <- overTime[[i]]$bach25.29[['I(AGEP < 30)']] <- NULL
+    }
+}
+
 ```
 
 
@@ -61,8 +93,9 @@ for(s in subs){
     }
 }
 
-
-rejAdj <- lapply(c(0.05,0.01,0.001),function(alpha) mult(pTrend,pDiff,alpha,TRUE))
+alphas <- c(0.1,0.05,0.01,0.001)
+rejAdj <- lapply(alphas,function(alpha) mult(pTrend,pDiff,alpha,TRUE))
+names(rejAdj) <- alphas
 #rejUnadj <- lapply(c(0.025,0.005,0.0005),function(alpha) mult(pTrend,pDiff,alpha,FALSE))
 
 for(nn in names(anal)){
@@ -405,7 +438,7 @@ High School diploma or equivalent.
 #### Deaf Male
 \newline \newline \newline
 ```{r HSRaceSexDeafM,results='markdown'}
-kable(tabFinish(anal[['hsRaceF']],TRUE))
+kable(tabFinish(anal[['hsRaceM']],TRUE))
 ```
 
 Table: Percentage of male deaf Americans by race/ethnicity attaining a
@@ -415,10 +448,7 @@ High School diploma or equivalent.
 #### Hearing Female
 \newline \newline \newline
 ```{r HSRaceSexHearF,results='markdown'}
-tabDb <- tabFinish(anal[['hsRaceSex']],FALSE)
-ftabH <- tabDb[,grep('Female',colnames(tabDb))]
-colnames(ftabH) <- sub('Female ','',colnames(ftabH))
-kable(ftabH)
+kable(tabFinish(anal[['hsRaceF']],FALSE))
 ```
 
 Table: Percentage of female hearing Americans by race/ethnicity attaining a
@@ -427,9 +457,7 @@ High School diploma or equivalent.
 #### Hearing Male
 \newline \newline \newline
 ```{r HSRaceSexHearM,results='markdown'}
-mtabH <- tabDb[,grep('Male',colnames(tabDb))]
-colnames(mtabH) <- sub('Male ','',colnames(mtabH))
-kable(mtabH)
+kable(tabFinish(anal[['hsRaceM']],FALSE))
 ```
 
 Table: Percentage of male hearing Americans by race/ethnicity attaining a
@@ -438,10 +466,7 @@ High School diploma or equivalent.
 #### Deaf Hearing Differences by Race: Female
 \newline \newline \newline
 ```{r results='markdown'}
-diffRaceSex <- diffDeafHear(anal[['hsRaceSex']])
-diffF <- diffRaceSex[,grep('Female',colnames(diffRaceSex))]
-colnames(diffF) <- gsub('Female ','',colnames(diffF))
-kable(diffF)
+kable(diffDeafHear(anal[['hsRaceF']]))
 ```
 
 Table: Differences in growth and trends between female deaf and hearing
@@ -451,9 +476,7 @@ growth for deaf Americans.
 #### Deaf Hearing Differences by Race: Male
 \newline \newline \newline
 ```{r results='markdown'}
-diffM <- diffRaceSex[,grep('Male',colnames(diffRaceSex))]
-colnames(diffM) <- gsub('Male ','',colnames(diffM))
-kable(diffM)
+kable(diffDeafHear(anal[['hsRaceM']]))
 ```
 
 Table: Differences in growth and trends between male deaf and hearing
@@ -463,13 +486,22 @@ growth for deaf Americans.
 
 
 \newline \newline \newline
-```{r HSRaceSexFig,fig.cap="High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
-figFun('hsRaceSex',overTime,erbr=FALSE)+ylab('High School Completion (%)')
+```{r HSRaceFemFig,fig.cap="Female High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('hsRaceF',overTime,erbr=FALSE)+ylab('High School Completion (%)')+ggtitle("Females")
 ```
+```{r HSRaceMalFig,fig.cap="Male High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('hsRaceM',overTime,erbr=FALSE)+ylab('High School Completion (%)')+ggtitle("Males")
+```
+
+
 \newline \newline \newline
-```{r HSRaceSexFigChange,fig.cap="Change in Bachelor\'s degree attainment by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
-figFun('hsRaceSex',overTime,chg=TRUE,erbr=FALSE)+ggtitle('High School Diploma or Equivalent')
+```{r HSRaceFemFigChg,fig.cap="Female High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('hsRaceF',overTime,chg=TRUE,erbr=FALSE)+ylab('High School Completion (%)')+ggtitle("Females")
 ```
+```{r HSRaceMalFigChg,fig.cap="Male High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('hsRaceM',overTime,chg=TRUE,erbr=FALSE)+ylab('High School Completion (%)')+ggtitle("Males")
+```
+
 
 
 
@@ -479,57 +511,45 @@ figFun('hsRaceSex',overTime,chg=TRUE,erbr=FALSE)+ggtitle('High School Diploma or
 #### Deaf Female
 \newline \newline \newline
 ```{r BACHRaceSexDeafF,results='markdown'}
-tabDb <- tabFinish(anal[['bachRaceSex']],TRUE)
-ftabD <- tabDb[,grep('Female',colnames(tabDb))]
-colnames(ftabD) <- sub('Female ','',colnames(ftabD))
-kable(ftabD)
+kable(tabFinish(anal[['bachRaceF']],TRUE))
 ```
 
 Table: Percentage of female deaf Americans by race/ethnicity attaining a
-High School diploma or equivalent.
+Bachelors Degree.
+Bachelors degree or equivalent.
 
 #### Deaf Male
 \newline \newline \newline
 ```{r BACHRaceSexDeafM,results='markdown'}
-mtabD <- tabDb[,grep('Male',colnames(tabDb))]
-colnames(mtabD) <- sub('Male ','',colnames(mtabD))
-kable(mtabD)
+kable(tabFinish(anal[['bachRaceM']],TRUE))
 ```
 
 Table: Percentage of male deaf Americans by race/ethnicity attaining a
-High School diploma or equivalent.
+Bachelors degree or equivalent.
 
 
 #### Hearing Female
 \newline \newline \newline
 ```{r BACHRaceSexHearF,results='markdown'}
-tabDb <- tabFinish(anal[['bachRaceSex']],FALSE)
-ftabH <- tabDb[,grep('Female',colnames(tabDb))]
-colnames(ftabH) <- sub('Female ','',colnames(ftabH))
-kable(ftabH)
+kable(tabFinish(anal[['bachRaceF']],FALSE))
 ```
 
 Table: Percentage of female hearing Americans by race/ethnicity attaining a
-High School diploma or equivalent.
+Bachelors degree or equivalent.
 
 #### Hearing Male
 \newline \newline \newline
 ```{r BACHRaceSexHearM,results='markdown'}
-mtabH <- tabDb[,grep('Male',colnames(tabDb))]
-colnames(mtabH) <- sub('Male ','',colnames(mtabH))
-kable(mtabH)
+kable(tabFinish(anal[['bachRaceM']],FALSE))
 ```
 
 Table: Percentage of male hearing Americans by race/ethnicity attaining a
-High School diploma or equivalent.
+Bachelors degree or equivalent.
 
 #### Deaf Hearing Differences by Race: Female
 \newline \newline \newline
 ```{r results='markdown'}
-diffRaceSex <- diffDeafHear(anal[['bachRaceSex']])
-diffF <- diffRaceSex[,grep('Female',colnames(diffRaceSex))]
-colnames(diffF) <- gsub('Female ','',colnames(diffF))
-kable(diffF)
+kable(diffDeafHear(anal[['bachRaceF']]))
 ```
 
 Table: Differences in growth and trends between female deaf and hearing
@@ -539,9 +559,7 @@ growth for deaf Americans.
 #### Deaf Hearing Differences by Race: Male
 \newline \newline \newline
 ```{r results='markdown'}
-diffM <- diffRaceSex[,grep('Male',colnames(diffRaceSex))]
-colnames(diffM) <- gsub('Male ','',colnames(diffM))
-kable(diffM)
+kable(diffDeafHear(anal[['bachRaceM']]))
 ```
 
 Table: Differences in growth and trends between male deaf and hearing
@@ -550,12 +568,20 @@ growth for deaf Americans.
 
 
 
+\newline \newline \newline
+```{r BACHRaceFemFig,fig.cap="Female High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('bachRaceF',overTime,erbr=FALSE)+ylab('College Completion (%)')+ggtitle("Females")
+```
+```{r BACHRaceMalFig,fig.cap="Male High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('bachRaceM',overTime,erbr=FALSE)+ylab('College Completion (%)')+ggtitle("Males")
+```
+
 
 \newline \newline \newline
-```{r BARaceSexFig,fig.cap="High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
-figFun('bachRaceSex',overTime,erbr=FALSE)+ylab('Bachelor\'s Degree Attainment (%)')
+```{r BACHRaceFemFigChg,fig.cap="Female High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('bachRaceF',overTime,chg=TRUE,erbr=FALSE)+ylab('College Completion (%)')+ggtitle("Females")
 ```
-\newline \newline \newline
-```{r BARaceSexFigChange,fig.cap="Change in Bachelor\'s degree attainment by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
-figFun('bachRaceSex',overTime,chg=TRUE,erbr=FALSE)+ggtitle('Bachelor\'s Degree or Equivalent')
+```{r BACHRaceMalFigChg,fig.cap="Male High School completion by race/ethnicity over time. Error bars are approximate 95% confidence intervals."}
+figFun('bachRaceM',overTime,chg=TRUE,erbr=FALSE)+ylab('College Completion (%)')+ggtitle("Males")
 ```
+

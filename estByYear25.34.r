@@ -1,6 +1,8 @@
 library(kimisc)
 library(survey)
 
+if(!exists('ya')) ya <- FALSE
+
 
 yearInfo <- function(year){
     print(year)
