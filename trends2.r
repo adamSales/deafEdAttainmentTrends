@@ -80,7 +80,7 @@ tabFunBegin <- function(nnn,ot,deaf=NULL){
     }
 
     ests <- extrSubs(ccc,'y')*100
-    ses <- extrSubs(ccc,'se2')*100
+    ses <- extrSubs(ccc,'se')*100
 
     ests <- rbind(ests,
                   Growth=ests[nrow(ests),]-ests[1,])
@@ -205,7 +205,7 @@ figFun <- function(nnn,ot,chg=FALSE,erbr=FALSE,...){
     ccc$deaf <- rep(c('Deaf','Hearing'),each=nrow(cccD$tdat))
 
     ccc$y <- ccc$y*100
-    ccc$se2 <- ccc$se2*100
+    ccc$se <- ccc$se*100
 
     ccc$Year <- ccc$year+2007
 
@@ -249,9 +249,9 @@ changeFig <- function(nnn,ot,...){
     cccH <- combineDat(nnn,ot,deaf=FALSE)
 
     estsD <- extrSubs(cccD,'y')
-    sesD <- extrSubs(cccD,'se2')
+    sesD <- extrSubs(cccD,'se')
     estsH <- extrSubs(cccH,'y')
-    sesH <- extrSubs(cccH,'se2')
+    sesH <- extrSubs(cccH,'se')
 
     for(i in nrow(estsD):1){
         estsD[i,] <- 100*(estsD[i,]-estsD[1,])
@@ -296,7 +296,7 @@ trends <- function(nnn,ot){
                      keep <- keep&(tdat[,subCols[j]]==subsets[i,j])
                  }
                  trends[[paste(subCols,subsets[i,],collapse=' ',sep='=')]] <-
-                     summary(lm(form,data=tdat[keep,],weights=1/se2^2))$coef['year',]
+                     summary(lm(form,data=tdat[keep,],weights=Freq))$coef['year',]
              }
              trends
          })
