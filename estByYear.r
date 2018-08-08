@@ -143,12 +143,12 @@ save(overTimeAge,file=ifelse(ya,'output/estsOverTimeAgeYA.RData','output/estsOve
 nyear <- length(overTime)
 nAnal <- length(overTime[[1]])
 
-for(i in 1:nyear)
-    for(j in 1:nAnal){
-        names(overTime[[i]][[j]])[grep('bachelors|hs',ignore.case=TRUE,names(overTime[[i]][[j]]))] <- 'xx'
-        frows <- grep('FALSE',rownames(overTime[[i]][[j]]))
-        if(length(frows)>0) overTime[[i]][[j]] <- overTime[[i]][[j]][-frows,]
-    }
+## for(i in 1:nyear)
+##     for(j in 1:nAnal){
+##         names(overTime[[i]][[j]])[grep('bachelors|hs',ignore.case=TRUE,names(overTime[[i]][[j]]))] <- 'xx'
+##         frows <- grep('FALSE',rownames(overTime[[i]][[j]]))
+##         if(length(frows)>0) overTime[[i]][[j]] <- overTime[[i]][[j]][-frows,]
+##     }
 
 
-save(overTime,file=ifelse(ya,'output/estsbyYearYA.RData','output/estsbyYear.RData'))
+## save(overTime,file=ifelse(ya,'output/estsbyYearYA.RData','output/estsbyYear.RData'))
