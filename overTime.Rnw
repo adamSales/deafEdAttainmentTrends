@@ -1,0 +1,990 @@
+\documentclass{article}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{makecell}
+\usepackage{hyperref}
+\usepackage[authoryear]{natbib}
+\usepackage{fullpage}
+\usepackage{capt-of}
+\usepackage{placeins}
+
+%\def\arraystretch{2}\tabcolsep=10pt
+
+
+\title{DHH Educational Attainment in the ACS}
+\author{Adam Sales}
+
+
+\begin{document}
+
+<<prelim,include=FALSE>>=
+library(knitr)
+library(survey)
+library(texreg)
+library(Hmisc)
+library(xtable)
+library(ggplot2)
+
+opts_chunk$set(
+echo=FALSE,results='hide',warning = FALSE,message = FALSE,cache=FALSE
+)
+
+options(xtable.sanitize.colnames.function=function(x) ifelse(x=='>','$>$',x))
+
+source('../generalCode/tabFunc.r')
+
+small <- FALSE
+#small <- TRUE
+@
+
+\maketitle
+
+<<pfun,include=FALSE>>=
+pfun <- function(p){
+    ifelse(p<0.001,'p<0.001',
+           ifelse(p<0.01,paste0('p=',round(p,3)),
+                  paste0('p=',round(p,2))))
+}
+
+pstar <- function(p)
+    ifelse(p<0.01,'**',
+           ifelse(p<0.05,'*',
+                  ifelse(p<0.1,'.','')))
+
+trendTest <- function(x)
+    cor.test(x,1:length(x),method='kendall')$p.value
+@
+<<analysis,include=FALSE>>=
+
+load('output/estsOverTime.RData')
+load('output/estsOverTimeAge.RData')
+
+trendsUnadj <- trendsFull(overTime)
+trendsAdj <- trendsFull(overTimeAge)
+
+@
+
+<<figFun>>=
+absFig <- function(anal,legendPlacement,...){
+    ccc <- combineDat(nnn,ot)
+
+
+
+@
+
+\section{Educational Attainment in 2015}
+%\subsection{Data}
+The data for this section are from the 2015 ACS.
+We discarded respondents below the age of 25, who were likely to be
+students.
+We also discarded respondents above the age of 64, many of whom likely
+suffer from age-onset hearing loss, and thus complicate the
+interpretation of the study.
+Finally, we discarded %respondents who are currently in school (though a
+%future section will analyze these) and
+respondants with missing
+deafness information (i.e. an NA for the ``Hearing Difficulty''
+question).
+
+
+
+\clearpage
+\section{Changes Over Time}
+The ``hearing difficulty'' variable was introduced into the ACS in
+2008.
+Here we document changes in educational attainment for deaf and
+hearing Americans between the ages of 25 and 65 from 2008--2015.
+We focus on the proportions, over time, of people in each category under question
+who completed high school and who received bachelor degrees.
+
+In several of the analyses, we test for the presence of a trend over
+time among different groups.
+We also compare growth over these eight years among different groups.
+Growth, here, is simply the difference in attainment---proportion
+graduating high school or college---between 2008 and 2015.
+When there are only two categories to compare in a table the growth
+amounts are given individually and compared within the table.
+When there are several categories, a ``growth comparison table'' gives
+all of the pair-wise comparisons of growth between different groups in
+question, with standard errors and indicators of statistical
+significance.
+
+<<changeNames,results='asis'>>=
+
+nyear <- length(overTime)
+nAnal <- length(overTime[[1]])
+
+for(i in 1:nyear)
+    for(j in 1:nAnal){
+        names(overTime[[i]][[j]])[grep('bachelors|hs',ignore.case=TRUE,names(overTime[[i]][[j]]))] <- 'y'
+        frows <- grep('FALSE',rownames(overTime[[i]][[j]]))
+        if(length(frows)>0) overTime[[i]][[j]] <- overTime[[i]][[j]][-frows,]
+    }
+
+
+#print(sapply(overTime[[1]],names))
+@
+\clearpage
+%\subsection{High School and Bachelor Degrees Over Time}
+
+\begin{center}
+
+
+<<hsTot,fig.width=8,fig.height=5>>=
+btDeaf <- vapply(overTime,function(x) x$hsTot[['y']][x$hsTot$DEAR==1],1)
+btHear <- vapply(overTime,function(x) x$hsTot[['y']][x$hsTot$DEAR==2],1)
+
+seDeaf <- vapply(overTime,function(x) x$hsTot$se2[x$hsTot$DEAR==1],1)
+seHear <- vapply(overTime,function(x) x$hsTot$se2[x$hsTot$DEAR==2],1)
+
+errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least HS',type='l')
+errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,type='l',col='blue')
+
+legend('bottomright',legend=c('Deaf','Hearing'),lty=1,col=c('black','blue'))
+@
+\captionof{figure}{High school degree attainment over time from the ACS}
+\end{center}
+
+<<hsTot,fig.width=8,fig.height=5>>=
+btDeaf <- vapply(overTime,function(x) x$hsTot[['y']][x$hsTot$DEAR==1],1)
+btHear <- vapply(overTime,function(x) x$hsTot[['y']][x$hsTot$DEAR==2],1)
+
+seDeaf <- vapply(overTime,function(x) x$hsTot$se2[x$hsTot$DEAR==1],1)
+seHear <- vapply(overTime,function(x) x$hsTot$se2[x$hsTot$DEAR==2],1)
+
+btDeaf <- btDeaf-btDeaf[1]
+btHear <- btHear-btHear[1]
+
+errbar(2008:2016-.05,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(min(btDeaf-seDeaf,btHear-seHear),max(btHear+seHear,btDeaf+seDeaf)),xlab='Year',ylab='Change since 2008 in % at least HS')
+errbar(2008:2016+.05,btHear,btHear+seHear,btHear-seHear,add=TRUE,col='blue',errbar.col='blue')
+deafBeta <- trendsUnadj$hsTot$`DEAR=1`[1]
+hearBeta <- trendsUnadj$hsTot$`DEAR=2`[1]
+abline(a=-(2008-.05)*deafBeta,b=deafBeta)
+abline(a=-(2008+.05)*hearBeta,b=hearBeta,col='blue')
+abline(h=0,lty=2)
+
+legend('bottomright',legend=c('Deaf','Hearing'),lty=1,col=c('black','blue'))
+@
+\captionof{figure}{High school degree attainment over time from the ACS}
+\end{center}
+
+
+<<hsTotTab,results='asis'>>=
+tab <- cbind(Deaf=paste0(round(btDeaf*100,1),' (',round(seDeaf*100,1),')'),Hearing=paste0(round(btHear*100,1),' (',round(seHear*100,2),')'))
+rownames(tab) <- 2008:2016
+
+growth <- c(btDeaf[9]-btDeaf[1],btHear[9]-btHear[1])
+growthSE <- c(sqrt(seDeaf[9]^2+seDeaf[1]^2),sqrt(seHear[1]^2+seHear[9]^2))
+growthDiff <- growth[1]-growth[2]
+growthDiffSE <- sqrt(growthSE[1]^2+growthSE[2]^2)
+growthDiffp <- 2*pnorm(-abs(growthDiff/growthDiffSE))
+
+tab <- rbind(tab,trend=c(pfun(trendTest(btHear)),pfun(trendTest(btDeaf))),growth=paste0(round(growth*100,1),' (',round(growthSE*100,1),')'),
+             `growth diff.`=c(round(growthDiff*100,1),paste0('(',round(growthDiffSE*100,1),')',pstar(growthDiffp))))
+
+xtable(tab,caption="Percentages of deaf and hearing Americans over 25 who attained at least a high school diploma. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend")
+
+
+@
+
+
+
+\begin{center}
+<<bachTot,fig.width=8,fig.height=5>>=
+
+btDeaf <- vapply(overTime,function(x) x$bachTot[['xx']][x$bachTot$DEAR==1],1)
+btHear <- vapply(overTime,function(x) x$bachTot[['xx']][x$bachTot$DEAR==2],1)
+
+seDeaf <- vapply(overTime,function(x) x$bachTot$se2[x$bachTot$DEAR==1],1)
+seHear <- vapply(overTime,function(x) x$bachTot$se2[x$bachTot$DEAR==2],1)
+
+errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least Bachelors',type='l')
+errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,type='l',col='blue')
+
+legend('topright',legend=c('Deaf','Hearing'),lty=1,col=c('black','blue'))
+
+@
+\captionof{figure}{Bachelor degree attainment over time from the ACS}
+
+\end{center}
+
+<<bachTotTab,results='asis'>>=
+tab <- cbind(Deaf=paste0(round(btDeaf*100,1),' (',round(seDeaf*100,1),')'),Hearing=paste0(round(btHear*100,1),' (',round(seHear*100,2),')'))
+rownames(tab) <- 2008:2016
+
+growth <- c(btDeaf[9]-btDeaf[1],btHear[9]-btHear[1])
+growthSE <- c(sqrt(seDeaf[9]^2+seDeaf[1]^2),sqrt(seHear[1]^2+seHear[9]^2))
+growthDiff <- growth[1]-growth[2]
+growthDiffSE <- sqrt(growthSE[1]^2+growthSE[2]^2)
+growthDiffp <- 2*pnorm(-abs(growthDiff/growthDiffSE))
+
+tab <- rbind(tab,trend=c(pfun(trendTest(btHear)),
+                         pfun(trendTest(btDeaf))),
+             growth=paste0(round(growth*100,1),' (',round(growthSE*100,1),')'),
+             `growth diff.`=c(round(growthDiff*100,1),paste0('(',round(growthDiffSE*100,1),')',pstar(growthDiffp))))
+
+
+xtable(tab,caption="Percentages of deaf and hearing Americans over 25 who attained at least a bachelors degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend")
+@
+
+\clearpage
+%\subsection{High School Degree Attainment for Ages 25--29}
+
+\begin{center}
+<<hs2529,fig.width=8,fig.height=5>>=
+btDeaf <- vapply(overTime,function(x) x$hs25.29[['xx']][x$hs25.29$DEAR==1],1)
+btHear <- vapply(overTime,function(x) x$hs25.29[['xx']][x$hs25.29$DEAR==2],1)
+
+seDeaf <- vapply(overTime,function(x) x$hs25.29$se2[x$hs25.29$DEAR==1],1)
+seHear <- vapply(overTime,function(x) x$hs25.29$se2[x$hs25.29$DEAR==2],1)
+
+errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least HS',
+       type='l',main='Ages 25--29')
+errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,type='l',col='blue')
+
+legend('bottomright',legend=c('Deaf','Hearing'),lty=1,col=c('black','blue'))
+
+
+@
+\end{center}
+
+<<hs2529Tab,results='asis'>>=
+tab <- cbind(Deaf=paste0(round(btDeaf*100,1),' (',round(seDeaf*100,1),')'),Hearing=paste0(round(btHear*100,1),' (',round(seHear*100,2),')'))
+rownames(tab) <- 2008:2016
+
+growth <- c(btDeaf[9]-btDeaf[1],btHear[9]-btHear[1])
+growthSE <- c(sqrt(seDeaf[9]^2+seDeaf[1]^2),sqrt(seHear[1]^2+seHear[9]^2))
+growthDiff <- growth[1]-growth[2]
+growthDiffSE <- sqrt(growthSE[1]^2+growthSE[2]^2)
+growthDiffp <- 2*pnorm(-abs(growthDiff/growthDiffSE))
+
+
+tab <- rbind(tab, trend=c(pfun(trendTest(btHear)),pfun(trendTest(btDeaf))),growth=paste0(round(growth*100,1),' (',round(growthSE*100,1),')'),
+             `growth diff.`=c(round(growthDiff*100,1),paste0('(',round(growthDiffSE*100,1),')',pstar(growthDiffp))))
+xtable(tab,caption="Percentages of deaf and hearing Americans ages 25--29 who attained at least a high school degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend")
+
+@
+
+\begin{center}
+<<bach2529,fig.width=8,fig.height=5>>=
+btDeaf <- vapply(overTime,function(x) x$bach25.29[['xx']][x$bach25.29$DEAR==1],1)
+btHear <- vapply(overTime,function(x) x$bach25.29[['xx']][x$bach25.29$DEAR==2],1)
+
+seDeaf <- vapply(overTime,function(x) x$bach25.29$se2[x$bach25.29$DEAR==1],1)
+seHear <- vapply(overTime,function(x) x$bach25.29$se2[x$bach25.29$DEAR==2],1)
+
+errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least Bachelors',
+       type='l',main='Ages 25--29')
+errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,type='l',col='blue')
+
+legend('topright',legend=c('Deaf','Hearing'),lty=1,col=c('black','blue'))
+
+@
+\end{center}
+
+<<bach2529tab,results='asis'>>=
+tab <- cbind(Deaf=paste0(round(btDeaf*100,1),' (',round(seDeaf*100,1),')'),Hearing=paste0(round(btHear*100,1),' (',round(seHear*100,2),')'))
+rownames(tab) <- 2008:2016
+
+growth <- c(btDeaf[9]-btDeaf[1],btHear[9]-btHear[1])
+growthSE <- c(sqrt(seDeaf[9]^2+seDeaf[1]^2),sqrt(seHear[1]^2+seHear[9]^2))
+growthDiff <- growth[1]-growth[2]
+growthDiffSE <- sqrt(growthSE[1]^2+growthSE[2]^2)
+growthDiffp <- 2*pnorm(-abs(growthDiff/growthDiffSE))
+
+tab <- rbind(tab,trend=c(pfun(trendTest(btDeaf)),pfun(trendTest(btHear))),
+                         growth=paste0(round(growth*100,1),' (',round(growthSE*100,1),')'),
+             `growth diff.`=c(round(growthDiff*100,1),paste0('(',round(growthDiffSE*100,1),')',pstar(growthDiffp))))
+
+xtable(tab,caption="Percentages of deaf and hearing Americans ages 25--29 who attained at least a bachelors degree. The final line includes the growth in high school degree attainment over those eight years, with a standard error and the p-value from Kendall's tau testing for the presence of a trend")
+
+@
+
+\clearpage
+%\subsection{Educational Attainment by Age Over Time}
+
+\begin{center}
+<<HSbyAge,fig.width=8,fig.height=5>>=
+
+with(overTime[[1]]$hsByAge,
+     errbar(25:64,xx[DEAR==1],xx[DEAR==1]+se2[DEAR==1],xx[DEAR==1]-se2[DEAR==1],
+            xlab='Age',ylab='% at least HS',type='l',ylim=c(0,1)))
+
+with(overTime[[i]]$hsByAge,
+     lines(25:64,xx[DEAR==2],lty=2))
+
+with(overTime[[1]]$hsByAge,
+     errbar(25:64,xx[DEAR==2],xx[DEAR==2]+se2[DEAR==2],xx[DEAR==2]-se2[DEAR==2],
+            add=TRUE))
+
+btDeaf <- with(overTime[[1]]$hsByAge,xx[DEAR==1])
+seDeaf <- with(overTime[[1]]$hsByAge,se2[DEAR==1])
+
+btHear <- with(overTime[[1]]$hsByAge,xx[DEAR==2])
+seHear <- with(overTime[[1]]$hsByAge,se2[DEAR==2])
+
+for(i in 2:length(overTime)){
+    with(overTime[[i]]$hsByAge,
+         errbar(25:64,xx[DEAR==1],xx[DEAR==1]+se2[DEAR==1],
+                 xx[DEAR==1]-se2[DEAR==1],
+                xlab='Age',ylab='% at least HS',type='l',add=TRUE,col=i))
+
+    btDeaf <- with(overTime[[i]]$hsByAge,cbind(btDeaf,xx[DEAR==1]))
+    seDeaf <- with(overTime[[i]]$hsByAge,cbind(seDeaf,se2[DEAR==1]))
+
+
+          with(overTime[[i]]$hsByAge,lines(25:64,xx[DEAR==2], lty=2,col=i))
+
+    with(overTime[[i]]$hsByAge,
+         errbar(25:64,xx[DEAR==2],xx[DEAR==2]+se2[DEAR==2],
+                 xx[DEAR==2]-se2[DEAR==2],
+                 xlab='Age',ylab='% at least HS',type='l',add=TRUE,col=i))
+
+
+
+    btHear <- with(overTime[[i]]$hsByAge,cbind(btHear,xx[DEAR==2]))
+    seHear <- with(overTime[[i]]$hsByAge,cbind(seHear,se2[DEAR==2]))
+
+}
+
+rownames(btHear) <- rownames(btDeaf) <- 25:64
+colnames(btHear) <- colnames(btDeaf) <- 2008:2016
+
+legend('bottomright',legend=c(2008:2016,'Deaf','Hearing'), col=c(1:length(overTime),1,1),lty=c(rep(1,length(overTime)+1),2))
+@
+\end{center}
+
+<<HSbyAgeCat,results='asis'>>=
+dEst <- lapply(overTime,function(ot) with(ot$hsByAgeCat,xx[DEAR==1]))
+dSE <- lapply(overTime,function(ot) with(ot$hsByAgeCat,se2[DEAR==1]))
+dTab <- lapply(1:length(dEst),function(yy) paste0(round(dEst[[yy]]*100,1),' (',round(dSE[[yy]]*100,2),')'))
+dTab <- do.call('rbind',dTab)
+
+hEst <- lapply(overTime,function(ot) with(ot$hsByAgeCat,xx[DEAR==2]))
+hSE <- lapply(overTime,function(ot) with(ot$hsByAgeCat,se2[DEAR==2]))
+hTab <- lapply(1:length(hEst),function(yy) paste0(round(hEst[[yy]]*100,1),' (',round(hSE[[yy]]*100,2),')'))
+hTab <- do.call('rbind',hTab)
+
+colnames(hTab) <- colnames(dTab) <- levels(overTime[[1]]$hsByAgeCat$ageRange)
+rownames(hTab) <- rownames(dTab) <- 2008:2016
+
+hTab <- rbind(hTab,trend=pfun(vapply(1:ncol(hTab),function(j) trendTest(vapply(hEst,function(x) x[j],1)),1)),
+              growth=paste0(round((hEst[[9]]-hEst[[1]])*100,1),' (',round(sqrt(hSE[[1]]^2+hSE[[9]]^2)*100,2),')'))
+
+dTab <- rbind(dTab,trend=pfun(vapply(1:ncol(dTab),function(j) trendTest(vapply(dEst,function(x) x[j],1)),1)),
+              growth=paste0(round((dEst[[9]]-dEst[[1]])*100,1),' (',round(sqrt(dSE[[1]]^2+dSE[[9]]^2)*100,2),')'))
+
+xtable(dTab,caption='Percentage of deaf Americans in each age cateogory attained at least a high school diploma, from year 2008--2015. Standard errors are in parentheses',label='tab:deafAgeTime')
+xtable(hTab,caption='Percentage of hearing Americans in each age cateogory attained at least a high school diploma, from year 2008--2015. Standard errors are in parentheses',label='tab:hearAgeTime')
+
+growth <- c(dEst[[9]]-dEst[[1]],hEst[[9]]-hEst[[1]])
+vv <- c(dSE[[9]]^2+dSE[[1]]^2,hSE[[9]]^2+hSE[[1]]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- paste(rep(colnames(hTab),2),rep(c('Deaf','Hearing'),each=ncol(hTab)))[-length(growth)]
+colnames(growthTab) <- paste0('\\thead{',rep(colnames(hTab),2),'\\\\',rep(c('Deaf','Hearing'),each=ncol(hTab)),'}')[-1]
+
+print(xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing age
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:hsAgeGrowth'),size='small')
+
+@
+
+
+\begin{center}
+<<bachByAge,fig.width=8,fig.height=5>>=
+#load('output/estsByYear.RData')
+
+
+with(overTime[[1]]$bachByAge,
+     errbar(25:64,xx[DEAR==1],xx[DEAR==1]+se2[DEAR==1],xx[DEAR==1]-se2[DEAR==1],
+            xlab='Age',ylab='% at least Bachelors',type='l',ylim=c(0,1)))
+
+with(overTime[[i]]$bachByAge,
+     lines(25:64,xx[DEAR==2],lty=2))
+
+with(overTime[[1]]$bachByAge,
+     errbar(25:64,xx[DEAR==2],xx[DEAR==2]+se2[DEAR==2],xx[DEAR==2]-se2[DEAR==2],
+            add=TRUE))
+
+
+btDeaf <- with(overTime[[1]]$bachByAge,xx[DEAR==1])
+seDeaf <- with(overTime[[1]]$bachByAge,se2[DEAR==1])
+
+btHear <- with(overTime[[1]]$bachByAge,xx[DEAR==2])
+seHear <- with(overTime[[1]]$bachByAge,se2[DEAR==2])
+
+for(i in 2:length(overTime)){
+    with(overTime[[i]]$bachByAge,
+     errbar(25:64,xx[DEAR==1],xx[DEAR==1]+se2[DEAR==1],xx[DEAR==1]-se2[DEAR==1],
+            xlab='Age',ylab='% at least Bachelors',type='l',add=TRUE,col=i))
+
+    btDeaf <- with(overTime[[i]]$bachByAge,cbind(btDeaf,xx[DEAR==1]))
+    seDeaf <- with(overTime[[i]]$bachByAge,cbind(seDeaf,se2[DEAR==1]))
+
+    with(overTime[[i]]$bachByAge,
+     lines(25:64,xx[DEAR==2], lty=2,col=i))
+
+    with(overTime[[i]]$bachByAge,
+     errbar(25:64,xx[DEAR==2],xx[DEAR==2]+se2[DEAR==2],xx[DEAR==2]-se2[DEAR==2],
+            xlab='Age',ylab='% at least Bachelors',type='l',add=TRUE,col=i))
+
+    btHear <- with(overTime[[i]]$bachByAge,cbind(btHear,xx[DEAR==2]))
+    seHear <- with(overTime[[i]]$bachByAge,cbind(seHear,se2[DEAR==2]))
+}
+
+legend('topright',legend=c(2008:2016,'Deaf','Hearing'), col=c(1:length(overTime),1,1),lty=c(rep(1,length(overTime)+1),2))
+
+
+@
+\end{center}
+
+
+<<BachByAgeCat,results='asis'>>=
+dEst <- lapply(overTime,function(ot) with(ot$bachByAgeCat,xx[DEAR==1]))
+dSE <- lapply(overTime,function(ot) with(ot$bachByAgeCat,se2[DEAR==1]))
+dTab <- lapply(1:length(dEst),function(yy) paste0(round(dEst[[yy]]*100,1),' (',round(dSE[[yy]]*100,2),')'))
+dTab <- do.call('rbind',dTab)
+
+hEst <- lapply(overTime,function(ot) with(ot$bachByAgeCat,xx[DEAR==2]))
+hSE <- lapply(overTime,function(ot) with(ot$bachByAgeCat,se2[DEAR==2]))
+hTab <- lapply(1:length(hEst),function(yy) paste0(round(hEst[[yy]]*100,1),' (',round(hSE[[yy]]*100,2),')'))
+hTab <- do.call('rbind',hTab)
+
+colnames(hTab) <- colnames(dTab) <- levels(overTime[[1]]$bachByAgeCat$ageRange)
+rownames(hTab) <- rownames(dTab) <- 2008:2016
+
+hTab <- rbind(hTab,trend=pfun(vapply(1:ncol(hTab),function(j) trendTest(vapply(hEst,function(x) x[j],1)),1)),
+              growth=paste0(round((hEst[[9]]-hEst[[1]])*100,1),' (',round(sqrt(hSE[[1]]^2+hSE[[9]]^2)*100,2),')'))
+
+dTab <- rbind(dTab,trend=pfun(vapply(1:ncol(dTab),function(j) trendTest(vapply(dEst,function(x) x[j],1)),1)),
+              growth=paste0(round((dEst[[9]]-dEst[[1]])*100,1),' (',round(sqrt(dSE[[1]]^2+dSE[[9]]^2)*100,2),')'))
+
+xtable(dTab,caption='Percentage of deaf Americans in each age cateogory attained at least a bachelor degree, from year 2008--2015. Standard errors are in parentheses',label='tab:deafAgeTime')
+xtable(hTab,caption='Percentage of hearing Americans in each age cateogory attained at least a bachelor degree, from year 2008--2015. Standard errors are in parentheses',label='tab:hearAgeTime')
+
+growth <- c(dEst[[9]]-dEst[[1]],hEst[[9]]-hEst[[1]])
+vv <- c(dSE[[9]]^2+dSE[[1]]^2,hSE[[9]]^2+hSE[[1]]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- paste(rep(colnames(hTab),2),rep(c('Deaf','Hearing'),each=ncol(hTab)))[-length(growth)]
+colnames(growthTab) <- paste0('\\thead{',rep(colnames(hTab),2),'\\\\',rep(c('Deaf','Hearing'),each=ncol(hTab)),'}')[-1]
+
+print(xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing age
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:bachAgeGrowth'),size='small')
+@
+
+
+\clearpage
+%\subsection{Attainment over Time by Race/Ethnicity}
+\begin{center}
+<<hsRace,fig.width=8,fig.height=5>>=
+races <- unique(overTime[[1]]$hsRace$raceEth)
+
+dTab <- NULL
+hTab <- NULL
+seD <- NULL
+seH <- NULL
+
+for(rr in 1:length(races)){
+    rac=races[rr]
+    btDeaf <- vapply(overTime,function(x) x$hsRace[['xx']][x$hsRace$DEAR==1 & x$hsRace$raceEth==rac],1)
+    btHear <- vapply(overTime,function(x) x$hsRace[['xx']][x$hsRace$DEAR==2 & x$hsRace$raceEth==rac],1)
+
+    dTab <- rbind(dTab,btDeaf)
+    hTab <- rbind(hTab,btHear)
+
+    seDeaf <- vapply(overTime,function(x) x$hsRace$se2[x$hsRace$DEAR==1& x$hsRace$raceEth==rac],1)
+    seHear <- vapply(overTime,function(x) x$hsRace$se2[x$hsRace$DEAR==2& x$hsRace$raceEth==rac],1)
+
+    seD <- rbind(seD,seDeaf)
+    seH <- rbind(seH,seHear)
+
+    errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least high school',
+           type='l',main='Ages 25--29',col=rr,add=rr!=1)
+    lines(2008:2016,btHear,col=rr,lty=3)
+    errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=rr)
+}
+
+legend('bottomright',legend=c(races,'Deaf','Hearing'),col=c(1:length(races),1,1),lty=c(rep(1,length(races)),1,2))
+
+@
+\end{center}
+
+<<hsRaceTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(dTab[,i]*100,1),' (',
+                              round(seD[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hTab[,i]*100,1),' (',
+                              round(seH[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- races
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+dt <- cbind(dt,
+            trend=pfun(apply(dTab,1,function(x) trendTest(x))),
+              growth=paste0(round((dTab[,9]-dTab[,1])*100,1),' (',
+                            round(sqrt(seD[,9]^2+seD[,1]^2)*100,1),')'))
+
+ht <- cbind(ht,
+            trend=pfun(apply(hTab,1,function(x) trendTest(x))),
+            growth=paste0(round((hTab[,9]-hTab[,1])*100,1),' (',
+                            round(sqrt(seH[,9]^2+seH[,1]^2)*100,1),')'))
+
+
+dt <- t(dt)
+ht <- t(ht)
+
+
+xtable(dt,caption='Percentages of deaf Americans of each racial/ethnic category attaining at least a high school degree, from 2008--2015. Also included is the p-value for Kendall\'s $\tau$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015')
+
+xtable(ht,caption='Percentages of hearing Americans of each age, 25--64, attaining at least a high school degree, from 2008--2015. Also included is the p-value for Kendall\'s $\tau$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015')
+@
+
+\begin{landscape}
+<<hsGrowthRace,results='asis'>>=
+
+growth <- apply(rbind(dTab,hTab),1,function(x) x[9]-x[1])
+vv <- apply(rbind(seD,seH),1,function(x) x[9]^2+x[1]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- paste(rep(races,2),rep(c('Deaf','Hearing'),each=length(races)))[-length(growth)]
+colnames(growthTab) <- paste0('\\thead{',rep(races,2),'\\\\',rep(c('Deaf','Hearing'),each=length(races)),'}')[-1]
+colnames(growthTab) <- gsub('African American','Black',colnames(growthTab))
+rownames(growthTab) <- gsub('African American','Black',rownames(growthTab))
+
+print(xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing racial/ethnic
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:hsRaceGrowth'),size='small')
+
+@
+\end{landscape}
+
+\begin{center}
+<<bachRace,fig.width=8,fig.height=5>>=
+races <- unique(overTime[[1]]$bachRace$raceEth)
+
+dTab <- NULL
+hTab <- NULL
+seD <- NULL
+seH <- NULL
+
+for(rr in 1:length(races)){
+    rac=races[rr]
+    btDeaf <- vapply(overTime,function(x) x$bachRace[['xx']][x$bachRace$DEAR==1 & x$bachRace$raceEth==rac],1)
+    btHear <- vapply(overTime,function(x) x$bachRace[['xx']][x$bachRace$DEAR==2 & x$bachRace$raceEth==rac],1)
+
+    dTab <- rbind(dTab,btDeaf)
+    hTab <- rbind(hTab,btHear)
+
+    seDeaf <- vapply(overTime,function(x) x$bachRace$se2[x$bachRace$DEAR==1& x$bachRace$raceEth==rac],1)
+    seHear <- vapply(overTime,function(x) x$bachRace$se2[x$bachRace$DEAR==2& x$bachRace$raceEth==rac],1)
+
+    seD <- rbind(seD,seDeaf)
+    seH <- rbind(seH,seHear)
+
+    errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least bachelors',
+           type='l',main='Ages 25--29',col=rr,add=rr!=1)
+    lines(2008:2016,btHear,col=rr,lty=3)
+    errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=rr)
+}
+
+legend('topright',legend=c(races,'Deaf','Hearing'),col=c(1:length(races),1,1),lty=c(rep(1,length(races)),1,2))
+
+@
+\end{center}
+
+<<bachRaceTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(dTab[,i]*100,1),' (',
+                              round(seD[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hTab[,i]*100,1),' (',
+                              round(seH[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- races
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+dt <- cbind(dt,
+            trend=pfun(apply(dTab,1,function(x) trendTest(x))),
+              growth=paste0(round((dTab[,9]-dTab[,1])*100,1),' (',
+                            round(sqrt(seD[,9]^2+seD[,1]^2)*100,1),')'))
+
+ht <- cbind(ht,
+            trend=pfun(apply(hTab,1,function(x) trendTest(x))),
+            growth=paste0(round((hTab[,9]-hTab[,1])*100,1),' (',
+                            round(sqrt(seH[,9]^2+seH[,1]^2)*100,1),')'))
+
+dt <- t(dt)
+ht <- t(ht)
+
+
+xtable(dt,caption='Percentages of deaf Americans of each racial/ethnic category attaining at least a bachelors degree, from 2008--2015. Also included is the p-value for Kendall\'s $\tau$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015',label='tab:bachRaceD')
+
+xtable(ht,caption='Percentages of hearing Americans of each racial/ethnic category attaining at least a bachelors degree, from 2008--2015. Also included is the p-value for Kendall\'s $\tau$ testing for a trend, and growth, the difference, for each racial/ethnic category, between 2008 and 2015',label='tab:bachRaceH')
+
+@
+\begin{landscape}
+<<bachRaceGrowth,results='asis'>>=
+
+growth <- apply(rbind(dTab,hTab),1,function(x) x[9]-x[1])
+vv <- apply(rbind(seD,seH),1,function(x) x[9]^2+x[1]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- paste(rep(races,2),rep(c('Deaf','Hearing'),each=length(races)))[-length(growth)]
+colnames(growthTab) <- paste0('\\thead{',rep(races,2),'\\\\',rep(c('Deaf','Hearing'),each=length(races)),'}')[-1]
+colnames(growthTab) <- gsub('African American','Black',colnames(growthTab))
+rownames(growthTab) <- gsub('African American','Black',rownames(growthTab))
+
+
+print(xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing racial/ethnic
+groups. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:bachRaceGrowth'),size='small')
+
+@
+\end{landscape}
+
+
+\clearpage
+%\subsection{Attainment Over Time by Sex}
+\begin{center}
+<<hsSexTime,fig.width=8,fig.height=5>>=
+deafTab <- NULL
+deafSE <- NULL
+hearTab <- NULL
+hearSE <- NULL
+for(sex in 1:2){
+    btDeaf <- vapply(overTime,function(x) x$hsSex[['xx']][x$hsSex$DEAR==1 & x$hsSex$SEX==sex],1)
+    btHear <- vapply(overTime,function(x) x$hsSex[['xx']][x$hsSex$DEAR==2 & x$hsSex$SEX==sex],1)
+
+    deafTab <- rbind(deafTab,btDeaf)
+    hearTab <- rbind(hearTab,btHear)
+
+    seDeaf <- vapply(overTime,function(x) x$hsSex$se2[x$hsSex$DEAR==1& x$hsSex$SEX==sex],1)
+    seHear <- vapply(overTime,function(x) x$hsSex$se2[x$hsSex$DEAR==2& x$hsSex$SEX==sex],1)
+
+    deafSE <- rbind(deafSE,seDeaf)
+    hearSE <- rbind(hearSE,seHear)
+
+    errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least high school',
+           type='l',main='Ages 25--29',col=sex,add=sex!=1)
+    lines(2008:2016,btHear,col=sex,lty=3)
+    errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=sex)
+}
+legend('bottomright',legend=c('Male','Female','Deaf','Hearing'),col=c(1:2,1,1),lty=c(1,1,1,2))
+
+@
+\end{center}
+
+<<hsSexTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(deafTab[,i]*100,1),' (',
+                              round(deafSE[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hearTab[,i]*100,1),' (',
+                              round(hearSE[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- c('Male','Female')
+
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+pdm <- trendTest(deafTab[1,])
+pdf <- trendTest(deafTab[2,])
+phm <- trendTest(hearTab[1,])
+phf <- trendTest(hearTab[2,])
+
+dt <- cbind(dt,growth=c(paste0(round((deafTab[,9]-deafTab[,1])*100,1),' (',round(100*sqrt(deafSE[,1]^2+deafSE[,9]^2),1),') ')),trend=pfun(c(pdm,pdf)))
+
+ht <- cbind(ht,growth=c(paste0(round((hearTab[,9]-hearTab[,1])*100,1),' (',round(100*sqrt(hearSE[,1]^2+hearSE[,9]^2),1),') ')),trend=pfun(c(phm,phf)))
+
+dt <- t(dt)
+ht <- t(ht)
+
+
+xtable(dt,caption='Percentages of deaf Americans of each gender attaining at least a high school degree, from 2008--2015')
+
+xtable(ht,caption='Percentages of hearing Americans of each gender, attaining at least a high school degree, from 2008--2015')
+
+growth <- apply(rbind(deafTab,hearTab),1,function(x) x[9]-x[1])
+vv <- apply(rbind(deafSE,hearSE),1,function(x) x[9]^2+x[1]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- c('Male Deaf','Female Deaf','Male Hearing')
+colnames(growthTab) <- paste0('\\thead{',c('Female\\\\Deaf','Male\\\\Hearing','Female\\\\Hearing'),'}')
+
+
+print(xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing genders. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:hsSexGrowth'))
+
+
+@
+
+
+\begin{center}
+<<bachSexTime,fig.width=8,fig.height=5>>=
+deafTab <- NULL
+deafSE <- NULL
+hearTab <- NULL
+hearSE <- NULL
+for(sex in 1:2){
+    btDeaf <- vapply(overTime,function(x) x$bachSex[['xx']][x$bachSex$DEAR==1 & x$bachSex$SEX==sex],1)
+    btHear <- vapply(overTime,function(x) x$bachSex[['xx']][x$bachSex$DEAR==2 & x$bachSex$SEX==sex],1)
+
+    deafTab <- rbind(deafTab,btDeaf)
+    hearTab <- rbind(hearTab,btHear)
+
+    seDeaf <- vapply(overTime,function(x) x$bachSex$se2[x$bachSex$DEAR==1& x$bachSex$SEX==sex],1)
+    seHear <- vapply(overTime,function(x) x$bachSex$se2[x$bachSex$DEAR==2& x$bachSex$SEX==sex],1)
+
+    deafSE <- rbind(deafSE,seDeaf)
+    hearSE <- rbind(hearSE,seHear)
+
+    errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least bachelors',
+           type='l',main='Ages 25--29',col=sex,add=sex!=1)
+    lines(2008:2016,btHear,col=sex,lty=3)
+    errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=sex)
+}
+legend('topright',legend=c('Male','Female','Deaf','Hearing'),col=c(1:2,1,1),lty=c(1,1,1,2))
+
+@
+\end{center}
+
+<<bachSexTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(deafTab[,i]*100,1),' (',
+                              round(deafSE[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hearTab[,i]*100,1),' (',
+                              round(hearSE[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- c('Male','Female')
+
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+pdm <- trendTest(deafTab[1,])
+pdf <- trendTest(deafTab[2,])
+phm <- trendTest(hearTab[1,])
+phf <- trendTest(hearTab[2,])
+
+dt <- cbind(dt,growth=c(paste0(round((deafTab[,9]-deafTab[,1])*100,1),' (',round(100*sqrt(deafSE[,1]^2+deafSE[,9]^2),1),') ')),trend=pfun(c(pdm,pdf)))
+
+ht <- cbind(ht,growth=c(paste0(round((hearTab[,9]-hearTab[,1])*100,1),' (',round(100*sqrt(hearSE[,1]^2+hearSE[,9]^2),1),') ')),trend=pfun(c(phm,phf)))
+
+dt <- t(dt)
+ht <- t(ht)
+
+
+xtable(dt,caption='Percentages of deaf Americans of each gender attaining at least a bachelors degree, from 2008--2015')
+
+xtable(ht,caption='Percentages of hearing Americans of each gender, attaining at least a bachelors degree, from 2008--2015')
+
+growth <- apply(rbind(deafTab,hearTab),1,function(x) x[9]-x[1])
+vv <- apply(rbind(deafSE,hearSE),1,function(x) x[9]^2+x[1]^2)
+growthTab <- matrix(nrow=length(growth)-1,ncol=length(growth)-1)
+for(i in 1:length(growth)-1)
+    for(j in (i+1):length(growth)){
+        growthDiff <- growth[i]-growth[j]
+        growthDiffSE <- sqrt(vv[i]+vv[j])
+        growthTab[i,j-1] <- paste0(round(growthDiff*100,1),' (',
+                                 round(growthDiffSE*100,2),')',
+                                 pstar(2*pnorm(-abs(growthDiff/growthDiffSE))))
+    }
+
+rownames(growthTab) <- c('Male Deaf','Female Deaf','Male Hearing')
+colnames(growthTab) <- paste0('\\thead{',c('Female\\\\Deaf','Male\\\\Hearing','Female\\\\Hearing'),'}')
+
+
+
+xtable(growthTab,caption=paste('Differences in growth from 2008 to 2015 between deaf and hearing genders. Standard errors for the difference are in parentheses, and asterisks denote statistical significance: . p<0.1, * p<0.05, ** p<0.01. The differences shown are the growth of the row group minus the columnn group, so, for instance,',rownames(growthTab)[1],'grew',round(abs(growth[1]-growth[2])*100,1), 'percentage points',ifelse(growth[1]>growth[2],'more','less'),'than',rownames(growthTab)[2]),label='tab:bachSexGrowth')
+
+
+@
+
+
+\clearpage
+%\subsection{Attainment Over Time by Race/Ethicity and Sex}
+\begin{center}
+<<hsRaceSex,fig.width=8,fig.height=8>>=
+races <- unique(overTime[[1]]$hsRaceSex$raceEth)
+
+dTab <- NULL
+hTab <- NULL
+seD <- NULL
+seH <- NULL
+leg <- NULL
+COL <- NULL
+
+for(rr in 1:length(races)){
+    for(sex in 1:2){
+        rac=races[rr]
+        btDeaf <- vapply(overTime,function(x)
+            x$hsRaceSex[['xx']][x$hsRaceSex$DEAR==1 & x$hsRaceSex$raceEth==rac & x$hsRaceSex$SEX==sex],1)
+        btHear <- vapply(overTime,function(x)
+            x$hsRaceSex[['xx']][x$hsRaceSex$DEAR==2 & x$hsRaceSex$raceEth==rac& x$hsRaceSex$SEX==sex],1)
+
+        seDeaf <- vapply(overTime,function(x)
+            x$hsRaceSex$se2[x$hsRaceSex$DEAR==1& x$hsRaceSex$raceEth==rac & x$hsRaceSex$SEX==sex],1)
+        seHear <- vapply(overTime,function(x)
+            x$hsRaceSex$se2[x$hsRaceSex$DEAR==2& x$hsRaceSex$raceEth==rac& x$hsRaceSex$SEX==sex],1)
+
+        errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least HS',
+               type='l',main='Ages 25--29',col=rr*sex,add=sex*rr!=1)
+        lines(2008:2016,btHear,col=rr,lty=3)
+        errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=rr)
+
+        dTab <- rbind(dTab,btDeaf)
+        hTab <- rbind(hTab,btHear)
+        seD <- rbind(seD,seDeaf)
+        seH <- rbind(seH,seHear)
+        leg <- c(leg,paste0(rac,ifelse(sex==1,'M','F')))
+        COL <- c(COL,rr*sex)
+    }
+}
+legend('bottomright',legend=c(leg,'Deaf','Hearing'),col=c(COL,1,1),lty=c(rep(1,length(leg),1,2)))
+@
+
+\end{center}
+
+\begin{landscape}
+<<hsRaceSexTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(dTab[,i]*100,1),' (',
+                              round(seD[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hTab[,i]*100,1),' (',
+                              round(seH[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- paste0('\\thead{',rep(races,each=2),'\\\\',c('Male','Female'),'}')
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+dt <- t(dt)
+ht <- t(ht)
+
+xtable(dt,caption='Percentages of deaf Americans of each racial/ethnic category and gender attaining at least a high school degree, from 2008--2015')
+
+xtable(ht,caption='Percentages of hearing Americans of each racial/ethnic category and gender, 25--64, attaining at least a high school degree, from 2008--2015')
+
+
+
+@
+\end{landscape}
+
+
+\begin{center}
+<<bachRaceSex,fig.width=8,fig.height=8>>=
+races <- unique(overTime[[1]]$bachRaceSex$raceEth)
+
+dTab <- NULL
+hTab <- NULL
+seD <- NULL
+seH <- NULL
+
+
+for(rr in 1:length(races)){
+    for(sex in 1:2){
+        rac=races[rr]
+        btDeaf <- vapply(overTime,function(x)
+            x$bachRaceSex[['xx']][x$bachRaceSex$DEAR==1 & x$bachRaceSex$raceEth==rac & x$bachRaceSex$SEX==sex],1)
+        btHear <- vapply(overTime,function(x)
+            x$bachRaceSex[['xx']][x$bachRaceSex$DEAR==2 & x$bachRaceSex$raceEth==rac& x$bachRaceSex$SEX==sex],1)
+
+        seDeaf <- vapply(overTime,function(x)
+            x$bachRaceSex$se2[x$bachRaceSex$DEAR==1& x$bachRaceSex$raceEth==rac & x$bachRaceSex$SEX==sex],1)
+        seHear <- vapply(overTime,function(x)
+            x$bachRaceSex$se2[x$bachRaceSex$DEAR==2& x$bachRaceSex$raceEth==rac& x$bachRaceSex$SEX==sex],1)
+
+        errbar(2008:2016,btDeaf,btDeaf+seDeaf,btDeaf-seDeaf,ylim=c(0,1),xlab='Year',ylab='% at least bachelors',
+               type='l',main='Ages 25--29',col=rr*sex,add=sex*rr!=1)
+        lines(2008:2016,btHear,col=rr,lty=3)
+        errbar(2008:2016,btHear,btHear+seHear,btHear-seHear,add=TRUE,col=rr)
+
+        dTab <- rbind(dTab,btDeaf)
+        hTab <- rbind(hTab,btHear)
+        seD <- rbind(seD,seDeaf)
+        seH <- rbind(seH,seHear)
+
+    }
+}
+legend('topright',legend=c(leg,'Deaf','Hearing'),col=c(COL,1,1),lty=c(rep(1,length(leg),1,2)))
+@
+\end{center}
+\begin{landscape}
+<<bachRaceSexTab,results='asis'>>=
+dt <- NULL
+ht <- NULL
+
+for(i in 1:ncol(dTab)){
+    dt <- cbind(dt,paste0(round(dTab[,i]*100,1),' (',
+                              round(seD[,i]*100,1),')'))
+    ht <- cbind(ht,paste0(round(hTab[,i]*100,1),' (',
+                              round(seH[,i]*100,1),')'))
+}
+
+rownames(dt) <- rownames(ht) <- paste0('\\thead{',rep(races,each=2),'\\\\',c('Male','Female'),'}')
+colnames(dt) <- colnames(ht) <- 2008:2016
+
+dt <- t(dt)
+ht <- t(ht)
+
+xtable(dt,caption='Percentages of deaf Americans of each racial/ethnic category and gender attaining at least a bachelors degree, from 2008--2015')
+
+xtable(ht,caption='Percentages of hearing Americans of each racial/ethnic category and gender, 25--64, attaining at least a bachelors degree, from 2008--2015')
+
+
+
+@
+\end{landscape}
+\FloatBarrier
+\end{document}
